@@ -184,6 +184,439 @@ namespace Strata.Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Strata.Domain.Media.MediaAsset", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<long>("ByteSize")
+                        .HasColumnType("bigint")
+                        .HasColumnName("byte_size");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("file_name");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer")
+                        .HasColumnName("height");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_id");
+
+                    b.Property<string>("StorageKey")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("storage_key");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer")
+                        .HasColumnName("width");
+
+                    b.HasKey("Id")
+                        .HasName("pk_media_assets");
+
+                    b.HasIndex("OwnerId")
+                        .HasDatabaseName("ix_media_assets_owner_id");
+
+                    b.ToTable("media_assets", (string)null);
+                });
+
+            modelBuilder.Entity("Strata.Domain.SectionTypes.SectionType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("archived_at");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("category");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("Draft")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("draft");
+
+                    b.Property<long>("DraftRevision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("draft_revision");
+
+                    b.Property<int>("LatestVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("latest_version");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<long?>("PublishedDraftRevision")
+                        .HasColumnType("bigint")
+                        .HasColumnName("published_draft_revision");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_section_types");
+
+                    b.HasIndex("Category")
+                        .HasDatabaseName("ix_section_types_category");
+
+                    b.HasIndex("CreatedBy")
+                        .HasDatabaseName("ix_section_types_created_by");
+
+                    b.ToTable("section_types", (string)null);
+                });
+
+            modelBuilder.Entity("Strata.Domain.SectionTypes.SectionTypeVersion", b =>
+                {
+                    b.Property<Guid>("SectionTypeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("section_type_id");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer")
+                        .HasColumnName("version");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("category");
+
+                    b.Property<string>("Definition")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("definition");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTimeOffset>("PublishedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published_at");
+
+                    b.Property<Guid>("PublishedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("published_by");
+
+                    b.HasKey("SectionTypeId", "Version")
+                        .HasName("pk_section_type_versions");
+
+                    b.HasIndex("PublishedBy")
+                        .HasDatabaseName("ix_section_type_versions_published_by");
+
+                    b.ToTable("section_type_versions", (string)null);
+                });
+
+            modelBuilder.Entity("Strata.Domain.Sites.PublishedSiteVersion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("PublishedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published_at");
+
+                    b.Property<Guid>("PublishedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("published_by");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("site_id");
+
+                    b.Property<string>("Snapshot")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("snapshot");
+
+                    b.Property<long>("SourceDraftRevision")
+                        .HasColumnType("bigint")
+                        .HasColumnName("source_draft_revision");
+
+                    b.Property<int>("VersionNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("version_number");
+
+                    b.HasKey("Id")
+                        .HasName("pk_published_site_versions");
+
+                    b.HasIndex("PublishedBy")
+                        .HasDatabaseName("ix_published_site_versions_published_by");
+
+                    b.HasIndex("SiteId", "VersionNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_published_site_versions_site_id_version_number");
+
+                    b.ToTable("published_site_versions", (string)null);
+                });
+
+            modelBuilder.Entity("Strata.Domain.Sites.Site", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CurrentPublishedVersionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("current_published_version_id");
+
+                    b.Property<string>("Draft")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("draft");
+
+                    b.Property<long>("DraftRevision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("draft_revision");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("owner_id");
+
+                    b.Property<long?>("PublishedDraftRevision")
+                        .HasColumnType("bigint")
+                        .HasColumnName("published_draft_revision");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("slug");
+
+                    b.Property<Guid?>("SourceTemplateId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("source_template_id");
+
+                    b.Property<int?>("SourceTemplateVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("source_template_version");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_sites");
+
+                    b.HasIndex("CurrentPublishedVersionId")
+                        .HasDatabaseName("ix_sites_current_published_version_id");
+
+                    b.HasIndex("OwnerId")
+                        .HasDatabaseName("ix_sites_owner_id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ix_sites_slug");
+
+                    b.HasIndex("SourceTemplateId")
+                        .HasDatabaseName("ix_sites_source_template_id");
+
+                    b.ToTable("sites", (string)null);
+                });
+
+            modelBuilder.Entity("Strata.Domain.Templates.StarterTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("archived_at");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Draft")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("draft");
+
+                    b.Property<long>("DraftRevision")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("draft_revision");
+
+                    b.Property<int>("LatestVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("latest_version");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<long?>("PublishedDraftRevision")
+                        .HasColumnType("bigint")
+                        .HasColumnName("published_draft_revision");
+
+                    b.Property<Guid?>("ThumbnailMediaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("thumbnail_media_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_starter_templates");
+
+                    b.HasIndex("CreatedBy")
+                        .HasDatabaseName("ix_starter_templates_created_by");
+
+                    b.HasIndex("ThumbnailMediaId")
+                        .HasDatabaseName("ix_starter_templates_thumbnail_media_id");
+
+                    b.ToTable("starter_templates", (string)null);
+                });
+
+            modelBuilder.Entity("Strata.Domain.Templates.StarterTemplateVersion", b =>
+                {
+                    b.Property<Guid>("TemplateId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("template_id");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer")
+                        .HasColumnName("version");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Document")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("document");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTimeOffset>("PublishedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("published_at");
+
+                    b.Property<Guid>("PublishedBy")
+                        .HasColumnType("uuid")
+                        .HasColumnName("published_by");
+
+                    b.Property<Guid?>("ThumbnailMediaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("thumbnail_media_id");
+
+                    b.HasKey("TemplateId", "Version")
+                        .HasName("pk_starter_template_versions");
+
+                    b.HasIndex("PublishedBy")
+                        .HasDatabaseName("ix_starter_template_versions_published_by");
+
+                    b.ToTable("starter_template_versions", (string)null);
+                });
+
+            modelBuilder.Entity("Strata.Domain.Templates.ThemePreset", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Theme")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("theme");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_theme_presets");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_theme_presets_name");
+
+                    b.ToTable("theme_presets", (string)null);
+                });
+
             modelBuilder.Entity("Strata.Infrastructure.Identity.StrataUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -325,6 +758,125 @@ namespace Strata.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_tokens_asp_net_users_user_id");
+                });
+
+            modelBuilder.Entity("Strata.Domain.Media.MediaAsset", b =>
+                {
+                    b.HasOne("Strata.Infrastructure.Identity.StrataUser", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_media_assets_asp_net_users_owner_id");
+                });
+
+            modelBuilder.Entity("Strata.Domain.SectionTypes.SectionType", b =>
+                {
+                    b.HasOne("Strata.Infrastructure.Identity.StrataUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_section_types_asp_net_users_created_by");
+                });
+
+            modelBuilder.Entity("Strata.Domain.SectionTypes.SectionTypeVersion", b =>
+                {
+                    b.HasOne("Strata.Infrastructure.Identity.StrataUser", null)
+                        .WithMany()
+                        .HasForeignKey("PublishedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_section_type_versions_asp_net_users_published_by");
+
+                    b.HasOne("Strata.Domain.SectionTypes.SectionType", null)
+                        .WithMany("Versions")
+                        .HasForeignKey("SectionTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_section_type_versions_section_types_section_type_id");
+                });
+
+            modelBuilder.Entity("Strata.Domain.Sites.PublishedSiteVersion", b =>
+                {
+                    b.HasOne("Strata.Infrastructure.Identity.StrataUser", null)
+                        .WithMany()
+                        .HasForeignKey("PublishedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_published_site_versions_asp_net_users_published_by");
+
+                    b.HasOne("Strata.Domain.Sites.Site", null)
+                        .WithMany()
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_published_site_versions_sites_site_id");
+                });
+
+            modelBuilder.Entity("Strata.Domain.Sites.Site", b =>
+                {
+                    b.HasOne("Strata.Domain.Sites.PublishedSiteVersion", null)
+                        .WithMany()
+                        .HasForeignKey("CurrentPublishedVersionId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_sites_published_site_versions_current_published_version_id");
+
+                    b.HasOne("Strata.Infrastructure.Identity.StrataUser", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_sites_asp_net_users_owner_id");
+
+                    b.HasOne("Strata.Domain.Templates.StarterTemplate", null)
+                        .WithMany()
+                        .HasForeignKey("SourceTemplateId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_sites_starter_templates_source_template_id");
+                });
+
+            modelBuilder.Entity("Strata.Domain.Templates.StarterTemplate", b =>
+                {
+                    b.HasOne("Strata.Infrastructure.Identity.StrataUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_starter_templates_asp_net_users_created_by");
+
+                    b.HasOne("Strata.Domain.Media.MediaAsset", null)
+                        .WithMany()
+                        .HasForeignKey("ThumbnailMediaId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_starter_templates_media_assets_thumbnail_media_id");
+                });
+
+            modelBuilder.Entity("Strata.Domain.Templates.StarterTemplateVersion", b =>
+                {
+                    b.HasOne("Strata.Infrastructure.Identity.StrataUser", null)
+                        .WithMany()
+                        .HasForeignKey("PublishedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_starter_template_versions_asp_net_users_published_by");
+
+                    b.HasOne("Strata.Domain.Templates.StarterTemplate", null)
+                        .WithMany("Versions")
+                        .HasForeignKey("TemplateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_starter_template_versions_starter_templates_template_id");
+                });
+
+            modelBuilder.Entity("Strata.Domain.SectionTypes.SectionType", b =>
+                {
+                    b.Navigation("Versions");
+                });
+
+            modelBuilder.Entity("Strata.Domain.Templates.StarterTemplate", b =>
+                {
+                    b.Navigation("Versions");
                 });
 #pragma warning restore 612, 618
         }

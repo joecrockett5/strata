@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Strata.Infrastructure.Tests</RootNamespace>
+    <!-- Test naming uses underscores; xUnit classes are public; no sync context in tests. -->
+    <NoWarn>$(NoWarn);CA1707;CA1515;CA2007</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Shouldly" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="Shouldly" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Strata.Infrastructure\Strata.Infrastructure.csproj" />
+    <ProjectReference Include="..\Strata.Testing\Strata.Testing.csproj" />
+  </ItemGroup>
+</Project>

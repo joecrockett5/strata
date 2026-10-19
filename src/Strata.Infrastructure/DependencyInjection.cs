@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Strata.Domain.Media;
+using Strata.Infrastructure.Content;
 using Strata.Infrastructure.Identity;
 using Strata.Infrastructure.Persistence;
 using Strata.Infrastructure.Seeding;
+using Strata.Infrastructure.Storage;
 
 namespace Strata.Infrastructure;
 
@@ -29,6 +32,13 @@ public static class DependencyInjection
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<StrataDbContext>()
             .AddSignInManager();
+
+        services.AddSingleton<IContentSchemaValidator, ContentSchemaValidator>();
+        services.AddSingleton<IRichTextSanitizer, RichTextSanitizer>();
+        services.AddSingleton<ContentSanitizer>();
+
+        services.Configure<StorageOptions>(configuration.GetSection(StorageOptions.SectionName));
+        services.AddSingleton<IFileStorage, LocalFileStorage>();
 
         services.Configure<SeedOptions>(configuration.GetSection(SeedOptions.SectionName));
         services.AddScoped<DatabaseInitializer>();
