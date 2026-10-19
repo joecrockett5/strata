@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.FileProviders;
 using Strata.Api.Features.Auth;
 using Strata.Api.Features.Content;
 using Strata.Api.Features.Library;
@@ -53,6 +54,15 @@ app.UseStatusCodePages();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<AntiforgeryMiddleware>();
+
+// The published-site stylesheet and script (packages/site-styles), shared with the editor canvas.
+var siteAssetsPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, app.Configuration["SiteAssets:Path"] ?? "../../packages/site-styles/src"));
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(siteAssetsPath),
+    RequestPath = "/site-assets",
+    OnPrepareResponse = context => context.Context.Response.Headers.CacheControl = "public, max-age=300",
+});
 
 app.MapOpenApi();
 app.MapHealthChecks("/health");
