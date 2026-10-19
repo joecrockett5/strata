@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Strata.Testing</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Strata.Domain\Strata.Domain.csproj" />
+  </ItemGroup>
+</Project>
