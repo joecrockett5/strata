@@ -2,3 +2,7 @@ packages:
   - apps/*
   - packages/*
   - e2e
+
+# Dependency build scripts are blocked by default; allow only what is needed.
+allowBuilds:
+  esbuild: true

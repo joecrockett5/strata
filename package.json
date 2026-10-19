@@ -16,7 +16,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "gen:schema": "pnpm --filter @strata/schema gen",
-    "gen": "pnpm gen:schema && pnpm gen:api"
+    "gen": "pnpm gen:schema && pnpm gen:api",
+    "parity:generate": "pnpm --filter @strata/renderer parity:generate"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
