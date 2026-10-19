@@ -108,3 +108,38 @@ the relevant tests fail as expected.
 - ASP.NET Core Identity: after a failed login, the next successful login resets the failure
   counter with a concurrency-stamped update; simultaneous logins of the same account at that
   moment can fail one of them. Tests use a dedicated account for failed-login probes.
+
+---
+
+## M2 — Renderers ✅
+
+### Built
+- `packages/site-styles`: hand-written mobile-first `site.css` (tokens → `--st-*` custom
+  properties, font stacks and radius as classes, columns/repeater grids with tablet/mobile
+  stacking, nav with JS-enhanced mobile menu, form states, focus styles, no `vh` units) and a
+  10-line `site.js` (progressive enhancement). Served by the API at `/site-assets/`.
+- `packages/renderer` (React, no editor deps): `SiteRoot`, `SectionView`, `PageView`, a component
+  per primitive, data-only `RenderContext`, `buildSiteInfo`/`pageHrefs` helpers, and the optional
+  `EditingAdapter` (text, richText, image, button, repeaterItem, afterRepeater, decorateNode,
+  decorateSection hooks).
+- `Strata.Rendering` (Razor components via `HtmlRenderer`): mirrors every component; `Css` and
+  `RenderRules` mirror `classes.ts`/`model.ts`; `StrataRenderer.RenderSectionAsync/RenderPageAsync`.
+- Parity harness: 10 fixtures in `fixtures/parity` (every primitive; Columns inside a Repeater;
+  default repeater items; images with all aspect/fit/radius; button link kinds incl. broken page
+  links; nav with/without logo; contact form default/success/invalid; all column counts/ratios;
+  a full page with header, hidden section and locked footer; two themes).
+- ADR 0001.
+
+### Verification
+| Criterion | How |
+|---|---|
+| Parity for every primitive, incl. Columns in Repeater | `Strata.Rendering.Tests.ParityTests` — 10/10 fixtures equal after normalisation; `Fixtures_cover_every_primitive` asserts all 12 `$type`s appear. Sensitivity checked by changing one class name in a Razor component (3 fixtures failed, then restored). |
+| React snapshots stable | `@strata/renderer` Vitest: snapshot equality for all fixtures + fixtures validate against the content schema (Ajv) |
+| Adapter contract | Vitest: an empty adapter yields byte-identical output for every fixture; hooks receive correct slot targets (incl. repeater item ids) and can decorate nodes/sections/items |
+| Normaliser | `NormalizerTests` pin what is forgiven (attribute/class/style order, entity forms, formatting whitespace, boolean attribute forms) and what is not (tags, attribute values, class sets, text, nesting) |
+| Theme tokens → CSS variables; responsive behaviour | Screenshots of 7 fixtures at 375/768/1280 px with `site.css` inspected: repeater grid 3→1 columns, Columns side-by-side→stacked by breakpoint, nav current-page marker, inverted primary button on primary background, background-image scrim, form error states. |
+| Security | Razor escapes text (`Text_values_are_html_escaped`); locked slots render the designer's value even if a value was stored. |
+
+### Deviations / notes
+- React 19 SSR hoists image preload hints; the parity harness strips them (not component markup).
+- Mobile nav links stay visible without JavaScript (progressive enhancement); `site.js` collapses them.

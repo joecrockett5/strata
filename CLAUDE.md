@@ -42,10 +42,22 @@ starting work. Keep all three current.
 - `tests/Strata.Api.Tests` — integration tests; derive from `ApiTestBase`, use `DesignerAsync()` /
   `OwnerAsync()` helpers. The DB is migrated + seeded once by `PostgresFixture`.
   Use `StrataApiFactory.LoginProbe` (never Owner) for failed-login tests.
+- `packages/renderer` — React renderer + `parity/` harness; `packages/site-styles` — site.css/site.js
+  (served by the API at `/site-assets/`).
+- `src/Strata.Rendering` — Razor components (`Components/`, `Nodes/`) + `StrataRenderer`.
 - `apps/editor/src` — `app/` (router, shell), `features/<area>/`, `components/ui/`, `lib/`.
 - `packages/api-client` — generated `openapi/strata-api.json` and `src/generated.ts` (both
   committed; CI fails if stale) plus the fetch client.
 - `e2e/` — Playwright; `support/` has login helpers and seeded accounts.
+
+## Rendering parity workflow
+
+1. Change markup in **both** `packages/renderer/src` (React) and `src/Strata.Rendering` (Razor).
+   Shared rules: `model.ts`/`classes.ts` ↔ `RenderRules.cs`/`Css.cs`.
+2. Add or adjust a fixture in `fixtures/parity/*.json` if new behaviour needs coverage.
+3. `pnpm parity:generate` → review the `*.expected.html` diff.
+4. `dotnet test --project tests/Strata.Rendering.Tests` (Razor vs snapshot) and
+   `pnpm --filter @strata/renderer test` (React vs snapshot).
 
 ## Conventions
 
