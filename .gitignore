@@ -1,0 +1,28 @@
+# .NET
+bin/
+obj/
+*.user
+TestResults/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+coverage/
+
+# Playwright
+playwright-report/
+test-results/
+e2e/.auth/
+
+# Local data
+.data/
+.env
+.env.local
+
+# Editors / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
