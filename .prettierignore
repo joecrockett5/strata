@@ -1,0 +1,10 @@
+**/dist
+**/bin
+**/obj
+pnpm-lock.yaml
+packages/api-client/openapi
+packages/api-client/src/generated.ts
+packages/schema/src/generated.ts
+fixtures/parity/*.expected.html
+src/Strata.Infrastructure/Persistence/Migrations
+*.md
