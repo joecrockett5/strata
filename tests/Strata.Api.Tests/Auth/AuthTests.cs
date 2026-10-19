@@ -27,7 +27,7 @@ public sealed class AuthTests(PostgresFixture postgres) : ApiTestBase(postgres)
     {
         using var client = AnonymousClient();
 
-        using var response = await client.LoginAsync(StrataApiFactory.Owner.Email, "not-the-password");
+        using var response = await client.LoginAsync(StrataApiFactory.LoginProbe.Email, "not-the-password");
 
         response.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
         response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");

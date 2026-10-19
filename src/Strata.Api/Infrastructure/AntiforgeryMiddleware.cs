@@ -19,7 +19,7 @@ public sealed class AntiforgeryMiddleware(RequestDelegate next)
                         statusCode: StatusCodes.Status400BadRequest,
                         title: "Invalid antiforgery token",
                         detail: "Fetch a token from GET /api/auth/antiforgery and send it in the X-XSRF-TOKEN header.",
-                        type: "https://strata.dev/problems/antiforgery")
+                        type: "urn:strata:problem:antiforgery")
                     .ExecuteAsync(context);
                 return;
             }

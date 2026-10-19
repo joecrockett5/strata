@@ -14,6 +14,10 @@ public abstract class ApiTestBase(PostgresFixture postgres) : IAsyncLifetime
 
     protected StrataClient AnonymousClient() => Factory.CreateStrataClient();
 
+    protected async Task<DesignerApi> DesignerAsync() => new(await ClientForAsync(StrataApiFactory.Designer));
+
+    protected async Task<OwnerApi> OwnerAsync(TestUser? user = null) => new(await ClientForAsync(user ?? StrataApiFactory.Owner));
+
     public virtual ValueTask InitializeAsync() => ValueTask.CompletedTask;
 
     public virtual async ValueTask DisposeAsync()

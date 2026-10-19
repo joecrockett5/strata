@@ -18,5 +18,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Strata.Api\Strata.Api.csproj" />
+    <ProjectReference Include="..\Strata.Testing\Strata.Testing.csproj" />
   </ItemGroup>
 </Project>

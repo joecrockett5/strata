@@ -8,6 +8,9 @@ public static class AuthenticationSetup
     public const string DesignerPolicy = "Designer";
     public const string SiteOwnerPolicy = "SiteOwner";
 
+    /// <summary>Anyone who authors content: designers and site owners.</summary>
+    public const string AuthorPolicy = "Author";
+
     public static IServiceCollection AddStrataAuthentication(this IServiceCollection services)
     {
         services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
@@ -36,7 +39,8 @@ public static class AuthenticationSetup
 
         services.AddAuthorizationBuilder()
             .AddPolicy(DesignerPolicy, policy => policy.RequireRole(Roles.Designer))
-            .AddPolicy(SiteOwnerPolicy, policy => policy.RequireRole(Roles.SiteOwner));
+            .AddPolicy(SiteOwnerPolicy, policy => policy.RequireRole(Roles.SiteOwner))
+            .AddPolicy(AuthorPolicy, policy => policy.RequireRole(Roles.Designer, Roles.SiteOwner));
 
         services.AddAntiforgery(options =>
         {

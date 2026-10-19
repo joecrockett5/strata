@@ -8,6 +8,7 @@ COPY src/Strata.Rendering/Strata.Rendering.csproj src/Strata.Rendering/
 COPY src/Strata.Api/Strata.Api.csproj src/Strata.Api/
 RUN dotnet restore src/Strata.Api/Strata.Api.csproj
 COPY src/ src/
+COPY schema/ schema/
 COPY packages/ packages/
 RUN dotnet publish src/Strata.Api/Strata.Api.csproj -c Release -o /app --no-restore -p:OpenApiGenerateDocuments=false
 
