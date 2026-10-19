@@ -1,0 +1,12 @@
+{
+  "name": "@strata/site-styles",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./site.css": "./src/site.css",
+    "./site.js": "./src/site.js"
+  },
+  "files": [
+    "src"
+  ]
+}
