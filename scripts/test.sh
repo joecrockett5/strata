@@ -14,9 +14,10 @@ dotnet test --no-build
 step "pnpm install"
 pnpm install --frozen-lockfile
 
-step "Generated code is up to date"
-pnpm gen:api >/dev/null
-git diff --exit-code -- packages/api-client || { echo "error: regenerate with 'pnpm gen:api' and commit" >&2; exit 1; }
+step "Generated code is up to date (schema types, OpenAPI document, API client)"
+pnpm gen >/dev/null
+git diff --exit-code -- packages/schema/src/generated.ts packages/api-client \
+  || { echo "error: generated files changed; run 'pnpm gen' (after 'dotnet build') and commit" >&2; exit 1; }
 
 step "lint"
 pnpm lint

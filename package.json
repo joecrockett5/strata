@@ -14,7 +14,9 @@
     "test": "pnpm -r --if-present test",
     "gen:api": "pnpm --filter @strata/api-client gen",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "gen:schema": "pnpm --filter @strata/schema gen",
+    "gen": "pnpm gen:schema && pnpm gen:api"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

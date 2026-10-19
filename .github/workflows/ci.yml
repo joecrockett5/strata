@@ -35,8 +35,8 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Generated API client is current
-        run: pnpm gen:api && git diff --exit-code -- packages/api-client
+      - name: Generated schema types and API client are current
+        run: pnpm gen && git diff --exit-code -- packages/schema/src/generated.ts packages/api-client
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

@@ -4,6 +4,8 @@ ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable
 WORKDIR /repo
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+COPY schema/ schema/
+COPY fixtures/ fixtures/
 COPY apps/ apps/
 COPY packages/ packages/
 RUN pnpm install --frozen-lockfile --filter @strata/editor...
