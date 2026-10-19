@@ -1,0 +1,163 @@
+{
+  "description": "Contact form with the fixed fields, honeypot and an edited submit label.",
+  "kind": "section",
+  "theme": {
+    "colors": {
+      "primary": "#1f4e5f",
+      "onPrimary": "#ffffff",
+      "secondary": "#4a6b5d",
+      "accent": "#c9822b",
+      "background": "#ffffff",
+      "surface": "#f3f5f4",
+      "text": "#1c2321",
+      "mutedText": "#55605c"
+    },
+    "fonts": {
+      "heading": "transitional",
+      "body": "system-ui"
+    },
+    "radius": "small"
+  },
+  "context": {
+    "site": {
+      "firmName": "Harbor & Pine Wealth Partners",
+      "logo": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000c",
+        "alt": "Harbor & Pine logo"
+      },
+      "homeHref": "/s/demo/",
+      "nav": [
+        {
+          "pageId": "11111111-1111-4111-8111-000000000001",
+          "title": "Home",
+          "href": "/s/demo/",
+          "current": false
+        },
+        {
+          "pageId": "11111111-1111-4111-8111-000000000002",
+          "title": "About",
+          "href": "/s/demo/about",
+          "current": false
+        },
+        {
+          "pageId": "11111111-1111-4111-8111-000000000003",
+          "title": "Contact",
+          "href": "/s/demo/contact",
+          "current": true
+        }
+      ]
+    },
+    "pageHrefs": {
+      "11111111-1111-4111-8111-000000000001": "/s/demo/",
+      "11111111-1111-4111-8111-000000000002": "/s/demo/about",
+      "11111111-1111-4111-8111-000000000003": "/s/demo/contact"
+    },
+    "mediaBase": "/media/",
+    "formAction": "/s/demo/_contact",
+    "pageId": "11111111-1111-4111-8111-000000000003"
+  },
+  "definition": {
+    "schemaVersion": 1,
+    "root": {
+      "$type": "section",
+      "id": "root",
+      "background": "background",
+      "paddingY": "lg",
+      "width": "standard",
+      "children": [
+        {
+          "$type": "columns",
+          "id": "contact",
+          "ratio": "1:1",
+          "gap": "xl",
+          "valign": "start",
+          "stackAt": "tablet",
+          "columns": [
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "title",
+                  "level": 2,
+                  "align": "start",
+                  "text": {
+                    "key": "title",
+                    "label": "title",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "Get in touch"
+                    }
+                  }
+                },
+                {
+                  "$type": "richText",
+                  "id": "office",
+                  "align": "start",
+                  "content": {
+                    "key": "office",
+                    "label": "office",
+                    "type": "richText",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "richText",
+                      "html": "<p>12 Harbor Street<br>Portland, ME</p>"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "contactForm",
+                  "id": "form",
+                  "submitLabel": {
+                    "key": "submitLabel",
+                    "label": "submitLabel",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": true,
+                    "default": {
+                      "$type": "text",
+                      "text": "Send message"
+                    }
+                  },
+                  "successMessage": {
+                    "key": "successMessage",
+                    "label": "successMessage",
+                    "type": "text",
+                    "mode": "locked",
+                    "required": true,
+                    "default": {
+                      "$type": "text",
+                      "text": "Thanks — we'll reply within one business day."
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "instance": {
+    "id": "aaaaaaaa-0000-4000-8000-000000000006",
+    "sectionTypeId": "bbbbbbbb-0000-4000-8000-000000000006",
+    "version": 1,
+    "lock": "none",
+    "hidden": false,
+    "values": {
+      "submitLabel": {
+        "$type": "text",
+        "text": "Request a consultation"
+      }
+    },
+    "repeaters": {}
+  }
+}

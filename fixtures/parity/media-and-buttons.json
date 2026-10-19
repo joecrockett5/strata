@@ -1,0 +1,423 @@
+{
+  "description": "Section background image (scrim modifier), images with every aspect/fit/radius option, an image without media (omitted), and buttons of every variant linking to a URL, a page, a missing page and nothing.",
+  "kind": "section",
+  "theme": {
+    "colors": {
+      "primary": "#1f4e5f",
+      "onPrimary": "#ffffff",
+      "secondary": "#4a6b5d",
+      "accent": "#c9822b",
+      "background": "#ffffff",
+      "surface": "#f3f5f4",
+      "text": "#1c2321",
+      "mutedText": "#55605c"
+    },
+    "fonts": {
+      "heading": "transitional",
+      "body": "system-ui"
+    },
+    "radius": "small"
+  },
+  "context": {
+    "site": {
+      "firmName": "Harbor & Pine Wealth Partners",
+      "logo": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000c",
+        "alt": "Harbor & Pine logo"
+      },
+      "homeHref": "/s/demo/",
+      "nav": [
+        {
+          "pageId": "11111111-1111-4111-8111-000000000001",
+          "title": "Home",
+          "href": "/s/demo/",
+          "current": true
+        },
+        {
+          "pageId": "11111111-1111-4111-8111-000000000002",
+          "title": "About",
+          "href": "/s/demo/about",
+          "current": false
+        },
+        {
+          "pageId": "11111111-1111-4111-8111-000000000003",
+          "title": "Contact",
+          "href": "/s/demo/contact",
+          "current": false
+        }
+      ]
+    },
+    "pageHrefs": {
+      "11111111-1111-4111-8111-000000000001": "/s/demo/",
+      "11111111-1111-4111-8111-000000000002": "/s/demo/about",
+      "11111111-1111-4111-8111-000000000003": "/s/demo/contact"
+    },
+    "mediaBase": "/media/",
+    "formAction": "/s/demo/_contact",
+    "pageId": "11111111-1111-4111-8111-000000000001"
+  },
+  "definition": {
+    "schemaVersion": 1,
+    "root": {
+      "$type": "section",
+      "id": "root",
+      "background": "background",
+      "paddingY": "2xl",
+      "width": "wide",
+      "children": [
+        {
+          "$type": "columns",
+          "id": "gallery",
+          "ratio": "1:1:1:1",
+          "gap": "sm",
+          "valign": "stretch",
+          "stackAt": "mobile",
+          "columns": [
+            {
+              "children": [
+                {
+                  "$type": "image",
+                  "id": "square",
+                  "aspect": "1:1",
+                  "fit": "cover",
+                  "radius": "full",
+                  "image": {
+                    "key": "square",
+                    "label": "square",
+                    "type": "image",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "image",
+                      "mediaId": null,
+                      "alt": "Placeholder"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "image",
+                  "id": "wide",
+                  "aspect": "16:9",
+                  "fit": "contain",
+                  "radius": "theme",
+                  "image": {
+                    "key": "wide",
+                    "label": "wide",
+                    "type": "image",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "image",
+                      "mediaId": null,
+                      "alt": "Placeholder"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "image",
+                  "id": "auto",
+                  "aspect": "auto",
+                  "fit": "cover",
+                  "radius": "none",
+                  "image": {
+                    "key": "auto",
+                    "label": "auto",
+                    "type": "image",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "image",
+                      "mediaId": null,
+                      "alt": "Placeholder"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "image",
+                  "id": "portrait",
+                  "aspect": "3:4",
+                  "fit": "cover",
+                  "radius": "theme",
+                  "image": {
+                    "key": "portrait",
+                    "label": "portrait",
+                    "type": "image",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "image",
+                      "mediaId": null,
+                      "alt": "Placeholder"
+                    }
+                  }
+                },
+                {
+                  "$type": "image",
+                  "id": "missing",
+                  "aspect": "4:3",
+                  "fit": "cover",
+                  "radius": "none",
+                  "image": {
+                    "key": "missing",
+                    "label": "missing",
+                    "type": "image",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "image",
+                      "mediaId": null,
+                      "alt": "Placeholder"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "image",
+          "id": "classic",
+          "aspect": "3:2",
+          "fit": "cover",
+          "radius": "none",
+          "image": {
+            "key": "classic",
+            "label": "classic",
+            "type": "image",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "image",
+              "mediaId": "22222222-2222-4222-8222-00000000000b",
+              "alt": "Harbour at dawn"
+            }
+          }
+        },
+        {
+          "$type": "button",
+          "id": "primary",
+          "variant": "primary",
+          "align": "center",
+          "label": {
+            "key": "primaryLabel",
+            "label": "primaryLabel",
+            "type": "text",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "text",
+              "text": "Book a call"
+            }
+          },
+          "link": {
+            "key": "primaryLink",
+            "label": "primaryLink",
+            "type": "link",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "link",
+              "target": null
+            }
+          }
+        },
+        {
+          "$type": "button",
+          "id": "secondary",
+          "variant": "secondary",
+          "align": "end",
+          "label": {
+            "key": "secondaryLabel",
+            "label": "secondaryLabel",
+            "type": "text",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "text",
+              "text": "About us"
+            }
+          },
+          "link": {
+            "key": "secondaryLink",
+            "label": "secondaryLink",
+            "type": "link",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "link",
+              "target": null
+            }
+          }
+        },
+        {
+          "$type": "button",
+          "id": "link",
+          "variant": "link",
+          "align": "start",
+          "label": {
+            "key": "linkLabel",
+            "label": "linkLabel",
+            "type": "text",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "text",
+              "text": "Read more"
+            }
+          },
+          "link": {
+            "key": "linkLink",
+            "label": "linkLink",
+            "type": "link",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "link",
+              "target": {
+                "kind": "url",
+                "url": "https://example.com/insights"
+              }
+            }
+          }
+        },
+        {
+          "$type": "button",
+          "id": "broken",
+          "variant": "secondary",
+          "align": "start",
+          "label": {
+            "key": "brokenLabel",
+            "label": "brokenLabel",
+            "type": "text",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "text",
+              "text": "Old page"
+            }
+          },
+          "link": {
+            "key": "brokenLink",
+            "label": "brokenLink",
+            "type": "link",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "link",
+              "target": null
+            }
+          }
+        },
+        {
+          "$type": "button",
+          "id": "nolink",
+          "variant": "primary",
+          "align": "start",
+          "label": {
+            "key": "noLabel",
+            "label": "noLabel",
+            "type": "text",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "text",
+              "text": "Not linked yet"
+            }
+          },
+          "link": {
+            "key": "noLink",
+            "label": "noLink",
+            "type": "link",
+            "mode": "editable",
+            "required": false,
+            "default": {
+              "$type": "link",
+              "target": null
+            }
+          }
+        }
+      ],
+      "backgroundImage": {
+        "key": "background",
+        "label": "background",
+        "type": "image",
+        "mode": "editable",
+        "required": false,
+        "default": {
+          "$type": "image",
+          "mediaId": null,
+          "alt": ""
+        }
+      }
+    }
+  },
+  "instance": {
+    "id": "aaaaaaaa-0000-4000-8000-000000000002",
+    "sectionTypeId": "bbbbbbbb-0000-4000-8000-000000000002",
+    "version": 1,
+    "lock": "none",
+    "hidden": false,
+    "values": {
+      "background": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000a",
+        "alt": ""
+      },
+      "square": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000a",
+        "alt": "Portrait of an advisor"
+      },
+      "wide": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000b",
+        "alt": "Office exterior"
+      },
+      "auto": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000a",
+        "alt": "Team at work"
+      },
+      "portrait": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000b",
+        "alt": "Client meeting"
+      },
+      "primaryLink": {
+        "$type": "link",
+        "target": {
+          "kind": "page",
+          "pageId": "11111111-1111-4111-8111-000000000003"
+        }
+      },
+      "secondaryLink": {
+        "$type": "link",
+        "target": {
+          "kind": "page",
+          "pageId": "11111111-1111-4111-8111-000000000002"
+        }
+      },
+      "brokenLink": {
+        "$type": "link",
+        "target": {
+          "kind": "page",
+          "pageId": "11111111-1111-4111-8111-0000000000ff"
+        }
+      }
+    },
+    "repeaters": {}
+  }
+}

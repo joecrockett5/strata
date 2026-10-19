@@ -9,6 +9,7 @@
     <Project Path="tests/Strata.Api.Tests/Strata.Api.Tests.csproj" />
     <Project Path="tests/Strata.Domain.Tests/Strata.Domain.Tests.csproj" />
     <Project Path="tests/Strata.Infrastructure.Tests/Strata.Infrastructure.Tests.csproj" />
+    <Project Path="tests/Strata.Rendering.Tests/Strata.Rendering.Tests.csproj" />
     <Project Path="tests/Strata.Testing/Strata.Testing.csproj" />
   </Folder>
 </Solution>

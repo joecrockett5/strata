@@ -1,0 +1,331 @@
+{
+  "description": "Every column count with several ratios, alignments and stacking breakpoints.",
+  "kind": "section",
+  "theme": {
+    "colors": {
+      "primary": "#1f4e5f",
+      "onPrimary": "#ffffff",
+      "secondary": "#4a6b5d",
+      "accent": "#c9822b",
+      "background": "#ffffff",
+      "surface": "#f3f5f4",
+      "text": "#1c2321",
+      "mutedText": "#55605c"
+    },
+    "fonts": {
+      "heading": "transitional",
+      "body": "system-ui"
+    },
+    "radius": "small"
+  },
+  "context": {
+    "site": {
+      "firmName": "Harbor & Pine Wealth Partners",
+      "logo": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000c",
+        "alt": "Harbor & Pine logo"
+      },
+      "homeHref": "/s/demo/",
+      "nav": [
+        {
+          "pageId": "11111111-1111-4111-8111-000000000001",
+          "title": "Home",
+          "href": "/s/demo/",
+          "current": true
+        },
+        {
+          "pageId": "11111111-1111-4111-8111-000000000002",
+          "title": "About",
+          "href": "/s/demo/about",
+          "current": false
+        },
+        {
+          "pageId": "11111111-1111-4111-8111-000000000003",
+          "title": "Contact",
+          "href": "/s/demo/contact",
+          "current": false
+        }
+      ]
+    },
+    "pageHrefs": {
+      "11111111-1111-4111-8111-000000000001": "/s/demo/",
+      "11111111-1111-4111-8111-000000000002": "/s/demo/about",
+      "11111111-1111-4111-8111-000000000003": "/s/demo/contact"
+    },
+    "mediaBase": "/media/",
+    "formAction": "/s/demo/_contact",
+    "pageId": "11111111-1111-4111-8111-000000000001"
+  },
+  "definition": {
+    "schemaVersion": 1,
+    "root": {
+      "$type": "section",
+      "id": "root",
+      "background": "background",
+      "paddingY": "none",
+      "width": "full",
+      "children": [
+        {
+          "$type": "columns",
+          "id": "one",
+          "ratio": "1",
+          "gap": "md",
+          "valign": "start",
+          "stackAt": "tablet",
+          "columns": [
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c1",
+                  "level": 3,
+                  "align": "start",
+                  "text": {
+                    "key": "c1",
+                    "label": "c1",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "One column"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "columns",
+          "id": "two",
+          "ratio": "3:1",
+          "gap": "lg",
+          "valign": "end",
+          "stackAt": "mobile",
+          "columns": [
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c2a",
+                  "level": 3,
+                  "align": "start",
+                  "text": {
+                    "key": "c2a",
+                    "label": "c2a",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "Wide"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c2b",
+                  "level": 3,
+                  "align": "start",
+                  "text": {
+                    "key": "c2b",
+                    "label": "c2b",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "Narrow"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "columns",
+          "id": "three",
+          "ratio": "1:2:1",
+          "gap": "xs",
+          "valign": "center",
+          "stackAt": "tablet",
+          "columns": [
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c3a",
+                  "level": 4,
+                  "align": "start",
+                  "text": {
+                    "key": "c3a",
+                    "label": "c3a",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "A"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c3b",
+                  "level": 4,
+                  "align": "start",
+                  "text": {
+                    "key": "c3b",
+                    "label": "c3b",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "B"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c3c",
+                  "level": 4,
+                  "align": "start",
+                  "text": {
+                    "key": "c3c",
+                    "label": "c3c",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "C"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$type": "columns",
+          "id": "four",
+          "ratio": "1:1:1:1",
+          "gap": "none",
+          "valign": "stretch",
+          "stackAt": "tablet",
+          "columns": [
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c40",
+                  "level": 4,
+                  "align": "start",
+                  "text": {
+                    "key": "c40",
+                    "label": "c40",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "Q0"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c41",
+                  "level": 4,
+                  "align": "start",
+                  "text": {
+                    "key": "c41",
+                    "label": "c41",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "Q1"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c42",
+                  "level": 4,
+                  "align": "start",
+                  "text": {
+                    "key": "c42",
+                    "label": "c42",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "Q2"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "$type": "heading",
+                  "id": "c43",
+                  "level": 4,
+                  "align": "start",
+                  "text": {
+                    "key": "c43",
+                    "label": "c43",
+                    "type": "text",
+                    "mode": "editable",
+                    "required": false,
+                    "default": {
+                      "$type": "text",
+                      "text": "Q3"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "instance": {
+    "id": "aaaaaaaa-0000-4000-8000-000000000007",
+    "sectionTypeId": "bbbbbbbb-0000-4000-8000-000000000007",
+    "version": 1,
+    "lock": "none",
+    "hidden": false,
+    "values": {},
+    "repeaters": {}
+  }
+}

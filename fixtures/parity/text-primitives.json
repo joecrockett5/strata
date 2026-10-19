@@ -1,0 +1,240 @@
+{
+  "description": "Headings h1–h4 with alignments, rich text with link and lists, nested stacks, spacer, divider; an empty heading is omitted; one slot uses its default.",
+  "kind": "section",
+  "theme": {
+    "colors": {
+      "primary": "#1f4e5f",
+      "onPrimary": "#ffffff",
+      "secondary": "#4a6b5d",
+      "accent": "#c9822b",
+      "background": "#ffffff",
+      "surface": "#f3f5f4",
+      "text": "#1c2321",
+      "mutedText": "#55605c"
+    },
+    "fonts": {
+      "heading": "transitional",
+      "body": "system-ui"
+    },
+    "radius": "small"
+  },
+  "context": {
+    "site": {
+      "firmName": "Harbor & Pine Wealth Partners",
+      "logo": {
+        "$type": "image",
+        "mediaId": "22222222-2222-4222-8222-00000000000c",
+        "alt": "Harbor & Pine logo"
+      },
+      "homeHref": "/s/demo/",
+      "nav": [
+        {
+          "pageId": "11111111-1111-4111-8111-000000000001",
+          "title": "Home",
+          "href": "/s/demo/",
+          "current": true
+        },
+        {
+          "pageId": "11111111-1111-4111-8111-000000000002",
+          "title": "About",
+          "href": "/s/demo/about",
+          "current": false
+        },
+        {
+          "pageId": "11111111-1111-4111-8111-000000000003",
+          "title": "Contact",
+          "href": "/s/demo/contact",
+          "current": false
+        }
+      ]
+    },
+    "pageHrefs": {
+      "11111111-1111-4111-8111-000000000001": "/s/demo/",
+      "11111111-1111-4111-8111-000000000002": "/s/demo/about",
+      "11111111-1111-4111-8111-000000000003": "/s/demo/contact"
+    },
+    "mediaBase": "/media/",
+    "formAction": "/s/demo/_contact",
+    "pageId": "11111111-1111-4111-8111-000000000001"
+  },
+  "definition": {
+    "schemaVersion": 1,
+    "root": {
+      "$type": "section",
+      "id": "root",
+      "background": "surface",
+      "paddingY": "xl",
+      "width": "narrow",
+      "children": [
+        {
+          "$type": "stack",
+          "id": "intro",
+          "gap": "sm",
+          "align": "center",
+          "children": [
+            {
+              "$type": "heading",
+              "id": "h1",
+              "level": 1,
+              "align": "center",
+              "text": {
+                "key": "title",
+                "label": "title",
+                "type": "text",
+                "mode": "editable",
+                "required": true,
+                "default": {
+                  "$type": "text",
+                  "text": "Default title"
+                }
+              }
+            },
+            {
+              "$type": "heading",
+              "id": "h2",
+              "level": 2,
+              "align": "center",
+              "text": {
+                "key": "subtitle",
+                "label": "subtitle",
+                "type": "text",
+                "mode": "editable",
+                "required": false,
+                "default": {
+                  "$type": "text",
+                  "text": "Plan with confidence"
+                }
+              }
+            },
+            {
+              "$type": "richText",
+              "id": "lede",
+              "align": "center",
+              "content": {
+                "key": "lede",
+                "label": "lede",
+                "type": "richText",
+                "mode": "editable",
+                "required": false,
+                "default": {
+                  "$type": "richText",
+                  "html": "<p>Default lede</p>"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "$type": "spacer",
+          "id": "gap",
+          "size": "xl"
+        },
+        {
+          "$type": "divider",
+          "id": "rule"
+        },
+        {
+          "$type": "stack",
+          "id": "details",
+          "gap": "md",
+          "align": "stretch",
+          "children": [
+            {
+              "$type": "heading",
+              "id": "h3",
+              "level": 3,
+              "align": "start",
+              "text": {
+                "key": "detailTitle",
+                "label": "detailTitle",
+                "type": "text",
+                "mode": "editable",
+                "required": false,
+                "default": {
+                  "$type": "text",
+                  "text": "Details"
+                }
+              }
+            },
+            {
+              "$type": "heading",
+              "id": "h4",
+              "level": 4,
+              "align": "end",
+              "text": {
+                "key": "smallTitle",
+                "label": "smallTitle",
+                "type": "text",
+                "mode": "locked",
+                "required": false,
+                "default": {
+                  "$type": "text",
+                  "text": "Fine print"
+                }
+              }
+            },
+            {
+              "$type": "heading",
+              "id": "empty",
+              "level": 3,
+              "align": "start",
+              "text": {
+                "key": "optionalTitle",
+                "label": "optionalTitle",
+                "type": "text",
+                "mode": "editable",
+                "required": false,
+                "default": {
+                  "$type": "text",
+                  "text": ""
+                }
+              }
+            },
+            {
+              "$type": "richText",
+              "id": "body",
+              "align": "start",
+              "content": {
+                "key": "body",
+                "label": "body",
+                "type": "richText",
+                "mode": "editable",
+                "required": false,
+                "default": {
+                  "$type": "richText",
+                  "html": "<p>x</p>"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "instance": {
+    "id": "aaaaaaaa-0000-4000-8000-000000000001",
+    "sectionTypeId": "bbbbbbbb-0000-4000-8000-000000000001",
+    "version": 1,
+    "lock": "none",
+    "hidden": false,
+    "values": {
+      "title": {
+        "$type": "text",
+        "text": "Retirement planning, made human"
+      },
+      "lede": {
+        "$type": "richText",
+        "html": "<p>Independent advice for <strong>families</strong> &amp; <em>founders</em>.</p>"
+      },
+      "detailTitle": {
+        "$type": "text",
+        "text": "What we do"
+      },
+      "body": {
+        "$type": "richText",
+        "html": "<p>We help with:</p><ul><li>Retirement income</li><li>Tax-aware investing</li></ul><ol><li>Listen</li><li>Plan</li></ol><p>Read our <a href=\"https://example.com/adv\">Form ADV</a> or email <a href=\"mailto:hello@example.com\">hello@example.com</a>.</p>"
+      }
+    },
+    "repeaters": {}
+  }
+}
