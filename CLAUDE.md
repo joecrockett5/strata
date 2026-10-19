@@ -24,7 +24,7 @@ starting work. Keep all three current.
 | Single .NET test | `dotnet test --project tests/Strata.Api.Tests -- --filter-method "*Name*"` |
 | Frontend checks | `pnpm lint`, `pnpm typecheck`, `pnpm test` |
 | New EF migration | `dotnet ef migrations add <Name> -p src/Strata.Infrastructure -o Persistence/Migrations` |
-| Regenerate API client | `dotnet build src/Strata.Api && pnpm gen:api` (OpenAPI doc is emitted on build) |
+| Regenerate generated code | `dotnet build src/Strata.Api && pnpm gen` (schema types + OpenAPI client; both committed, CI checks staleness) |
 
 ## Where things live
 
@@ -33,8 +33,15 @@ starting work. Keep all three current.
 - `src/Strata.Rendering` — Razor components for published sites.
 - `src/Strata.Api` — `Features/<Area>/<Area>Endpoints.cs` (minimal APIs), `Infrastructure/` for
   cross-cutting concerns (auth setup, antiforgery).
-- `tests/Strata.Api.Tests` — integration tests; derive from `ApiTestBase`, use
-  `ClientForAsync(StrataApiFactory.Designer|Owner|OtherOwner)`.
+- `schema/strata-content.schema.json` — **the** content model. Change it first, then `pnpm gen`,
+  then the C# records in `Strata.Domain/Content` (round-trip tests catch drift).
+- `fixtures/content/` — JSON fixtures shared by .NET and TS tests.
+- `src/Strata.Domain/Content/Validation` — definition rules, document validator, lock rules (pure).
+- `src/Strata.Api/Features/Content/ContentWritePipeline.cs` — the only path for content writes.
+- `tests/Strata.Testing` — content builders (`using static Strata.Testing.Content`).
+- `tests/Strata.Api.Tests` — integration tests; derive from `ApiTestBase`, use `DesignerAsync()` /
+  `OwnerAsync()` helpers. The DB is migrated + seeded once by `PostgresFixture`.
+  Use `StrataApiFactory.LoginProbe` (never Owner) for failed-login tests.
 - `apps/editor/src` — `app/` (router, shell), `features/<area>/`, `components/ui/`, `lib/`.
 - `packages/api-client` — generated `openapi/strata-api.json` and `src/generated.ts` (both
   committed; CI fails if stale) plus the fetch client.

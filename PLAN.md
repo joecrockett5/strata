@@ -98,7 +98,7 @@ selection and as an anchor). Style properties are enum tokens/presets only.
 
 | `$type` | Properties | Slots |
 |---|---|---|
-| `section` (root only) | `background` (colour token), `paddingY` (spacing), `width` (`narrow`/`standard`/`wide`/`full`), `children` | `backgroundImage?` (image) |
+| `section` (root only) | `background` (`background`/`surface`/`primary`), `paddingY` (spacing), `width` (`narrow`/`standard`/`wide`/`full`), `children` | `backgroundImage?` (image) |
 | `stack` | `gap`, `align` (`start`/`center`/`end`/`stretch`), `children` | — |
 | `columns` | `ratio` (preset valid for the column count), `gap`, `valign`, `stackAt` (`tablet`/`mobile`), `columns: [{ children }]` (1–4) | — |
 | `heading` | `level` (1–4), `align` | `text` (text) |
@@ -115,7 +115,8 @@ Rules (checked when validating a definition; the stricter set also before *publi
 unique node ids; slot keys unique across the whole section (including inside repeaters, so
 values never collide); repeater keys unique and distinct from slot keys; repeater `min ≤
 defaultItemCount ≤ max`; no repeater inside a repeater (keeps the value model flat: one level
-of items — sufficient for every section in the brief; noted as a limitation); at most one `nav`;
+of items — sufficient for every section in the brief; noted as a limitation); at most one `nav`
+and one `contactForm` (neither inside a repeater);
 every image slot has default alt text or is `required`; `section` only as root.
 
 ### Slots and values
