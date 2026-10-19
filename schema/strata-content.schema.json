@@ -1,0 +1,629 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://strata.local/schema/strata-content.schema.json",
+  "title": "StrataContent",
+  "description": "Single source of truth for Strata content: section definitions (trees of primitives with slots), slot values, themes, section instances and site documents. TypeScript types are generated from this file; the API validates every content write against it.",
+  "$comment": "Top-level documents are SectionDefinition and SiteDocument. Polymorphic objects use a \"$type\" discriminator (nodes, slot values) or \"kind\" (link targets).",
+  "oneOf": [{ "$ref": "#/$defs/SectionDefinition" }, { "$ref": "#/$defs/SiteDocument" }],
+  "$defs": {
+    "Uuid": {
+      "title": "Uuid",
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+    },
+    "NodeId": {
+      "title": "NodeId",
+      "description": "Stable id of a node within its section definition.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$"
+    },
+    "SlotKey": {
+      "title": "SlotKey",
+      "description": "camelCase key, unique within a section definition (including repeater keys).",
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]{0,39}$"
+    },
+    "Spacing": {
+      "title": "Spacing",
+      "description": "Step on the fixed spacing scale.",
+      "type": "string",
+      "enum": ["none", "xs", "sm", "md", "lg", "xl", "2xl"]
+    },
+    "Align": {
+      "title": "Align",
+      "type": "string",
+      "enum": ["start", "center", "end"]
+    },
+    "SectionBackground": {
+      "title": "SectionBackground",
+      "description": "Colour token used as a section background. Text colour follows automatically (onPrimary on primary).",
+      "type": "string",
+      "enum": ["background", "surface", "primary"]
+    },
+    "ContentWidth": {
+      "title": "ContentWidth",
+      "type": "string",
+      "enum": ["narrow", "standard", "wide", "full"]
+    },
+    "ColumnRatio": {
+      "title": "ColumnRatio",
+      "description": "Relative column widths; the number of parts must equal the number of columns.",
+      "type": "string",
+      "enum": ["1", "1:1", "1:2", "2:1", "1:3", "3:1", "1:1:1", "1:2:1", "2:1:1", "1:1:2", "1:1:1:1"]
+    },
+    "SlotMode": {
+      "title": "SlotMode",
+      "type": "string",
+      "enum": ["editable", "locked"]
+    },
+
+    "TextValue": {
+      "title": "TextValue",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "text" },
+        "text": { "type": "string", "maxLength": 5000 }
+      },
+      "required": ["$type", "text"],
+      "additionalProperties": false
+    },
+    "RichTextValue": {
+      "title": "RichTextValue",
+      "description": "HTML restricted to p, br, strong, em, a, ul, ol, li. Sanitised by the server on every write.",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "richText" },
+        "html": { "type": "string", "maxLength": 50000 }
+      },
+      "required": ["$type", "html"],
+      "additionalProperties": false
+    },
+    "ImageValue": {
+      "title": "ImageValue",
+      "description": "A media reference plus alt text. Alt text is stored per use, not per media asset.",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "image" },
+        "mediaId": { "oneOf": [{ "$ref": "#/$defs/Uuid" }, { "type": "null" }] },
+        "alt": { "type": "string", "maxLength": 300 }
+      },
+      "required": ["$type", "mediaId", "alt"],
+      "additionalProperties": false
+    },
+    "PageLinkTarget": {
+      "title": "PageLinkTarget",
+      "type": "object",
+      "properties": {
+        "kind": { "const": "page" },
+        "pageId": { "$ref": "#/$defs/Uuid" }
+      },
+      "required": ["kind", "pageId"],
+      "additionalProperties": false
+    },
+    "UrlLinkTarget": {
+      "title": "UrlLinkTarget",
+      "description": "External link. Only http(s), mailto and tel URLs are allowed.",
+      "type": "object",
+      "properties": {
+        "kind": { "const": "url" },
+        "url": { "type": "string", "maxLength": 2000, "pattern": "^(https?://|mailto:|tel:)" }
+      },
+      "required": ["kind", "url"],
+      "additionalProperties": false
+    },
+    "LinkTarget": {
+      "title": "LinkTarget",
+      "oneOf": [{ "$ref": "#/$defs/PageLinkTarget" }, { "$ref": "#/$defs/UrlLinkTarget" }]
+    },
+    "LinkValue": {
+      "title": "LinkValue",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "link" },
+        "target": { "oneOf": [{ "$ref": "#/$defs/LinkTarget" }, { "type": "null" }] }
+      },
+      "required": ["$type", "target"],
+      "additionalProperties": false
+    },
+    "SlotValue": {
+      "title": "SlotValue",
+      "oneOf": [
+        { "$ref": "#/$defs/TextValue" },
+        { "$ref": "#/$defs/RichTextValue" },
+        { "$ref": "#/$defs/ImageValue" },
+        { "$ref": "#/$defs/LinkValue" }
+      ]
+    },
+
+    "TextSlotDefinition": {
+      "title": "TextSlotDefinition",
+      "type": "object",
+      "properties": {
+        "key": { "$ref": "#/$defs/SlotKey" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "type": { "const": "text" },
+        "mode": { "$ref": "#/$defs/SlotMode" },
+        "required": { "type": "boolean" },
+        "maxLength": { "type": "integer", "minimum": 1, "maximum": 5000 },
+        "default": { "$ref": "#/$defs/TextValue" }
+      },
+      "required": ["key", "label", "type", "mode", "required", "default"],
+      "additionalProperties": false
+    },
+    "RichTextSlotDefinition": {
+      "title": "RichTextSlotDefinition",
+      "type": "object",
+      "properties": {
+        "key": { "$ref": "#/$defs/SlotKey" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "type": { "const": "richText" },
+        "mode": { "$ref": "#/$defs/SlotMode" },
+        "required": { "type": "boolean" },
+        "maxLength": {
+          "description": "Maximum length of the visible text (tags excluded).",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20000
+        },
+        "default": { "$ref": "#/$defs/RichTextValue" }
+      },
+      "required": ["key", "label", "type", "mode", "required", "default"],
+      "additionalProperties": false
+    },
+    "ImageSlotDefinition": {
+      "title": "ImageSlotDefinition",
+      "type": "object",
+      "properties": {
+        "key": { "$ref": "#/$defs/SlotKey" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "type": { "const": "image" },
+        "mode": { "$ref": "#/$defs/SlotMode" },
+        "required": { "type": "boolean" },
+        "default": { "$ref": "#/$defs/ImageValue" }
+      },
+      "required": ["key", "label", "type", "mode", "required", "default"],
+      "additionalProperties": false
+    },
+    "LinkSlotDefinition": {
+      "title": "LinkSlotDefinition",
+      "type": "object",
+      "properties": {
+        "key": { "$ref": "#/$defs/SlotKey" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "type": { "const": "link" },
+        "mode": { "$ref": "#/$defs/SlotMode" },
+        "required": { "type": "boolean" },
+        "default": { "$ref": "#/$defs/LinkValue" }
+      },
+      "required": ["key", "label", "type", "mode", "required", "default"],
+      "additionalProperties": false
+    },
+    "SlotDefinition": {
+      "title": "SlotDefinition",
+      "oneOf": [
+        { "$ref": "#/$defs/TextSlotDefinition" },
+        { "$ref": "#/$defs/RichTextSlotDefinition" },
+        { "$ref": "#/$defs/ImageSlotDefinition" },
+        { "$ref": "#/$defs/LinkSlotDefinition" }
+      ]
+    },
+
+    "ChildNode": {
+      "title": "ChildNode",
+      "description": "Any primitive except the section root.",
+      "oneOf": [
+        { "$ref": "#/$defs/StackNode" },
+        { "$ref": "#/$defs/ColumnsNode" },
+        { "$ref": "#/$defs/HeadingNode" },
+        { "$ref": "#/$defs/RichTextNode" },
+        { "$ref": "#/$defs/ImageNode" },
+        { "$ref": "#/$defs/ButtonNode" },
+        { "$ref": "#/$defs/RepeaterNode" },
+        { "$ref": "#/$defs/NavNode" },
+        { "$ref": "#/$defs/ContactFormNode" },
+        { "$ref": "#/$defs/SpacerNode" },
+        { "$ref": "#/$defs/DividerNode" }
+      ]
+    },
+    "Children": {
+      "title": "Children",
+      "type": "array",
+      "items": { "$ref": "#/$defs/ChildNode" },
+      "maxItems": 50
+    },
+    "SectionNode": {
+      "title": "SectionNode",
+      "description": "Root of every section definition.",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "section" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "background": { "$ref": "#/$defs/SectionBackground" },
+        "backgroundImage": { "$ref": "#/$defs/ImageSlotDefinition" },
+        "paddingY": { "$ref": "#/$defs/Spacing" },
+        "width": { "$ref": "#/$defs/ContentWidth" },
+        "children": { "$ref": "#/$defs/Children" }
+      },
+      "required": ["$type", "id", "background", "paddingY", "width", "children"],
+      "additionalProperties": false
+    },
+    "StackNode": {
+      "title": "StackNode",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "stack" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "gap": { "$ref": "#/$defs/Spacing" },
+        "align": { "type": "string", "enum": ["start", "center", "end", "stretch"] },
+        "children": { "$ref": "#/$defs/Children" }
+      },
+      "required": ["$type", "id", "gap", "align", "children"],
+      "additionalProperties": false
+    },
+    "Column": {
+      "title": "Column",
+      "type": "object",
+      "properties": {
+        "children": { "$ref": "#/$defs/Children" }
+      },
+      "required": ["children"],
+      "additionalProperties": false
+    },
+    "ColumnsNode": {
+      "title": "ColumnsNode",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "columns" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "ratio": { "$ref": "#/$defs/ColumnRatio" },
+        "gap": { "$ref": "#/$defs/Spacing" },
+        "valign": { "type": "string", "enum": ["start", "center", "end", "stretch"] },
+        "stackAt": {
+          "description": "Columns stack vertically below this breakpoint.",
+          "type": "string",
+          "enum": ["tablet", "mobile"]
+        },
+        "columns": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Column" },
+          "minItems": 1,
+          "maxItems": 4
+        }
+      },
+      "required": ["$type", "id", "ratio", "gap", "valign", "stackAt", "columns"],
+      "additionalProperties": false
+    },
+    "HeadingNode": {
+      "title": "HeadingNode",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "heading" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "align": { "$ref": "#/$defs/Align" },
+        "text": { "$ref": "#/$defs/TextSlotDefinition" }
+      },
+      "required": ["$type", "id", "level", "align", "text"],
+      "additionalProperties": false
+    },
+    "RichTextNode": {
+      "title": "RichTextNode",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "richText" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "align": { "$ref": "#/$defs/Align" },
+        "content": { "$ref": "#/$defs/RichTextSlotDefinition" }
+      },
+      "required": ["$type", "id", "align", "content"],
+      "additionalProperties": false
+    },
+    "ImageNode": {
+      "title": "ImageNode",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "image" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "aspect": { "type": "string", "enum": ["auto", "1:1", "4:3", "3:2", "16:9", "3:4"] },
+        "fit": { "type": "string", "enum": ["cover", "contain"] },
+        "radius": {
+          "description": "none, the theme's corner radius, or fully rounded (circle for 1:1).",
+          "type": "string",
+          "enum": ["none", "theme", "full"]
+        },
+        "image": { "$ref": "#/$defs/ImageSlotDefinition" }
+      },
+      "required": ["$type", "id", "aspect", "fit", "radius", "image"],
+      "additionalProperties": false
+    },
+    "ButtonNode": {
+      "title": "ButtonNode",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "button" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "variant": { "type": "string", "enum": ["primary", "secondary", "link"] },
+        "align": { "$ref": "#/$defs/Align" },
+        "label": { "$ref": "#/$defs/TextSlotDefinition" },
+        "link": { "$ref": "#/$defs/LinkSlotDefinition" }
+      },
+      "required": ["$type", "id", "variant", "align", "label", "link"],
+      "additionalProperties": false
+    },
+    "RepeaterNode": {
+      "title": "RepeaterNode",
+      "description": "Repeats its children once per item. Slots inside are stored per item. Repeaters cannot be nested.",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "repeater" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "key": { "$ref": "#/$defs/SlotKey" },
+        "itemLabel": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "min": { "type": "integer", "minimum": 0, "maximum": 24 },
+        "max": { "type": "integer", "minimum": 1, "maximum": 24 },
+        "defaultItemCount": { "type": "integer", "minimum": 0, "maximum": 24 },
+        "layout": { "type": "string", "enum": ["stack", "grid-2", "grid-3", "grid-4"] },
+        "gap": { "$ref": "#/$defs/Spacing" },
+        "children": { "$ref": "#/$defs/Children" }
+      },
+      "required": [
+        "$type",
+        "id",
+        "key",
+        "itemLabel",
+        "min",
+        "max",
+        "defaultItemCount",
+        "layout",
+        "gap",
+        "children"
+      ],
+      "additionalProperties": false
+    },
+    "NavNode": {
+      "title": "NavNode",
+      "description": "Logo and firm name from site settings plus links generated from the site's pages.",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "nav" },
+        "id": { "$ref": "#/$defs/NodeId" }
+      },
+      "required": ["$type", "id"],
+      "additionalProperties": false
+    },
+    "ContactFormNode": {
+      "title": "ContactFormNode",
+      "description": "Fixed fields: name, email, optional phone, message.",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "contactForm" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "submitLabel": { "$ref": "#/$defs/TextSlotDefinition" },
+        "successMessage": { "$ref": "#/$defs/TextSlotDefinition" }
+      },
+      "required": ["$type", "id", "submitLabel", "successMessage"],
+      "additionalProperties": false
+    },
+    "SpacerNode": {
+      "title": "SpacerNode",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "spacer" },
+        "id": { "$ref": "#/$defs/NodeId" },
+        "size": { "$ref": "#/$defs/Spacing" }
+      },
+      "required": ["$type", "id", "size"],
+      "additionalProperties": false
+    },
+    "DividerNode": {
+      "title": "DividerNode",
+      "type": "object",
+      "properties": {
+        "$type": { "const": "divider" },
+        "id": { "$ref": "#/$defs/NodeId" }
+      },
+      "required": ["$type", "id"],
+      "additionalProperties": false
+    },
+
+    "SectionDefinition": {
+      "title": "SectionDefinition",
+      "description": "A section type's tree of primitives. Published versions are immutable.",
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "root": { "$ref": "#/$defs/SectionNode" }
+      },
+      "required": ["schemaVersion", "root"],
+      "additionalProperties": false
+    },
+
+    "HexColor": {
+      "title": "HexColor",
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$"
+    },
+    "FontStack": {
+      "title": "FontStack",
+      "description": "Curated system font stacks (no web-font downloads).",
+      "type": "string",
+      "enum": ["system-ui", "neo-grotesque", "humanist", "geometric-humanist", "transitional", "old-style"]
+    },
+    "ThemeColors": {
+      "title": "ThemeColors",
+      "type": "object",
+      "properties": {
+        "primary": { "$ref": "#/$defs/HexColor" },
+        "onPrimary": { "$ref": "#/$defs/HexColor" },
+        "secondary": { "$ref": "#/$defs/HexColor" },
+        "accent": { "$ref": "#/$defs/HexColor" },
+        "background": { "$ref": "#/$defs/HexColor" },
+        "surface": { "$ref": "#/$defs/HexColor" },
+        "text": { "$ref": "#/$defs/HexColor" },
+        "mutedText": { "$ref": "#/$defs/HexColor" }
+      },
+      "required": [
+        "primary",
+        "onPrimary",
+        "secondary",
+        "accent",
+        "background",
+        "surface",
+        "text",
+        "mutedText"
+      ],
+      "additionalProperties": false
+    },
+    "ThemeFonts": {
+      "title": "ThemeFonts",
+      "type": "object",
+      "properties": {
+        "heading": { "$ref": "#/$defs/FontStack" },
+        "body": { "$ref": "#/$defs/FontStack" }
+      },
+      "required": ["heading", "body"],
+      "additionalProperties": false
+    },
+    "Theme": {
+      "title": "Theme",
+      "type": "object",
+      "properties": {
+        "colors": { "$ref": "#/$defs/ThemeColors" },
+        "fonts": { "$ref": "#/$defs/ThemeFonts" },
+        "radius": { "type": "string", "enum": ["none", "small", "large"] }
+      },
+      "required": ["colors", "fonts", "radius"],
+      "additionalProperties": false
+    },
+    "ThemeTokenPath": {
+      "title": "ThemeTokenPath",
+      "type": "string",
+      "enum": [
+        "colors.primary",
+        "colors.onPrimary",
+        "colors.secondary",
+        "colors.accent",
+        "colors.background",
+        "colors.surface",
+        "colors.text",
+        "colors.mutedText",
+        "fonts.heading",
+        "fonts.body",
+        "radius"
+      ]
+    },
+
+    "RepeaterItem": {
+      "title": "RepeaterItem",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/Uuid" },
+        "values": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SlotKey" },
+          "additionalProperties": { "$ref": "#/$defs/SlotValue" }
+        }
+      },
+      "required": ["id", "values"],
+      "additionalProperties": false
+    },
+    "SectionLock": {
+      "title": "SectionLock",
+      "description": "Set by designers in starter templates. locked: cannot be removed, moved or edited. required: cannot be removed.",
+      "type": "string",
+      "enum": ["none", "required", "locked"]
+    },
+    "SectionInstance": {
+      "title": "SectionInstance",
+      "description": "Use of a section type on a page. Pins a published version and stores values for editable slots only.",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/Uuid" },
+        "sectionTypeId": { "$ref": "#/$defs/Uuid" },
+        "version": { "type": "integer", "minimum": 1 },
+        "lock": { "$ref": "#/$defs/SectionLock" },
+        "hidden": { "type": "boolean" },
+        "values": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SlotKey" },
+          "additionalProperties": { "$ref": "#/$defs/SlotValue" }
+        },
+        "repeaters": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SlotKey" },
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/RepeaterItem" },
+            "maxItems": 24
+          }
+        }
+      },
+      "required": ["id", "sectionTypeId", "version", "lock", "hidden", "values", "repeaters"],
+      "additionalProperties": false
+    },
+    "PageSeo": {
+      "title": "PageSeo",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 120 },
+        "description": { "type": "string", "maxLength": 320 }
+      },
+      "required": ["title", "description"],
+      "additionalProperties": false
+    },
+    "Page": {
+      "title": "Page",
+      "description": "A page. The order of the pages array is the navigation order; the page with slug \"\" is the home page.",
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/Uuid" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "slug": { "type": "string", "pattern": "^(|[a-z0-9]+(-[a-z0-9]+)*)$", "maxLength": 60 },
+        "showInNav": { "type": "boolean" },
+        "seo": { "$ref": "#/$defs/PageSeo" },
+        "sections": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SectionInstance" },
+          "maxItems": 40
+        }
+      },
+      "required": ["id", "title", "slug", "showInNav", "seo", "sections"],
+      "additionalProperties": false
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "type": "object",
+      "properties": {
+        "firmName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "logo": { "oneOf": [{ "$ref": "#/$defs/ImageValue" }, { "type": "null" }] }
+      },
+      "required": ["firmName", "logo"],
+      "additionalProperties": false
+    },
+    "SiteDocument": {
+      "title": "SiteDocument",
+      "description": "A whole site: settings, theme (with designer token locks), global header/footer and pages. Used for site drafts, starter templates and published snapshots.",
+      "type": "object",
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "settings": { "$ref": "#/$defs/SiteSettings" },
+        "theme": { "$ref": "#/$defs/Theme" },
+        "themeLocks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ThemeTokenPath" },
+          "uniqueItems": true
+        },
+        "header": { "oneOf": [{ "$ref": "#/$defs/SectionInstance" }, { "type": "null" }] },
+        "footer": { "oneOf": [{ "$ref": "#/$defs/SectionInstance" }, { "type": "null" }] },
+        "pages": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Page" },
+          "minItems": 1,
+          "maxItems": 30
+        }
+      },
+      "required": ["schemaVersion", "settings", "theme", "themeLocks", "header", "footer", "pages"],
+      "additionalProperties": false
+    }
+  }
+}

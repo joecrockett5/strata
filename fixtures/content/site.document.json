@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "settings": {
+    "firmName": "Example Partners",
+    "logo": { "$type": "image", "mediaId": null, "alt": "Example Partners logo" }
+  },
+  "theme": {
+    "colors": {
+      "primary": "#1f4e5f",
+      "onPrimary": "#ffffff",
+      "secondary": "#4a6b5d",
+      "accent": "#c9822b",
+      "background": "#ffffff",
+      "surface": "#f3f5f4",
+      "text": "#1c2321",
+      "mutedText": "#55605c"
+    },
+    "fonts": { "heading": "transitional", "body": "system-ui" },
+    "radius": "small"
+  },
+  "themeLocks": ["colors.primary", "colors.secondary"],
+  "header": null,
+  "footer": {
+    "id": "8b2f6f0e-55a4-4f3b-9d5e-0f4c8c6d2a11",
+    "sectionTypeId": "0195e3c4-0000-7000-8000-000000000001",
+    "version": 1,
+    "lock": "locked",
+    "hidden": false,
+    "values": {},
+    "repeaters": {}
+  },
+  "pages": [
+    {
+      "id": "5f0c2f43-0f0e-4f6c-9a39-7b9f7c1c0a01",
+      "title": "Home",
+      "slug": "",
+      "showInNav": true,
+      "seo": { "title": "Example Partners", "description": "Independent advice." },
+      "sections": [
+        {
+          "id": "c9a5b6a2-3c1d-4f3e-8a6b-2d4e6f8a0b01",
+          "sectionTypeId": "0195e3c4-0000-7000-8000-000000000002",
+          "version": 1,
+          "lock": "required",
+          "hidden": false,
+          "values": {
+            "title": { "$type": "text", "text": "Welcome" },
+            "body": {
+              "$type": "richText",
+              "html": "<p>Hello <a href=\"https://example.com\">world</a>.</p>"
+            },
+            "ctaLink": {
+              "$type": "link",
+              "target": { "kind": "page", "pageId": "5f0c2f43-0f0e-4f6c-9a39-7b9f7c1c0a02" }
+            }
+          },
+          "repeaters": {
+            "cards": [
+              {
+                "id": "e3f1a0b2-1111-4c2d-9e3f-000000000001",
+                "values": { "cardTitle": { "$type": "text", "text": "First" } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "5f0c2f43-0f0e-4f6c-9a39-7b9f7c1c0a02",
+      "title": "Contact",
+      "slug": "contact",
+      "showInNav": true,
+      "seo": { "title": "", "description": "" },
+      "sections": []
+    }
+  ]
+}

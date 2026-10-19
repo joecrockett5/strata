@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "root": {
+    "$type": "section",
+    "id": "root",
+    "background": "surface",
+    "backgroundImage": {
+      "key": "background",
+      "label": "Background image",
+      "type": "image",
+      "mode": "editable",
+      "required": false,
+      "default": { "$type": "image", "mediaId": null, "alt": "Decorative background" }
+    },
+    "paddingY": "xl",
+    "width": "wide",
+    "children": [
+      { "$type": "nav", "id": "nav" },
+      {
+        "$type": "stack",
+        "id": "intro",
+        "gap": "md",
+        "align": "center",
+        "children": [
+          {
+            "$type": "heading",
+            "id": "title",
+            "level": 2,
+            "align": "center",
+            "text": {
+              "key": "title",
+              "label": "Title",
+              "type": "text",
+              "mode": "editable",
+              "required": true,
+              "maxLength": 80,
+              "default": { "$type": "text", "text": "Everything in one section" }
+            }
+          },
+          {
+            "$type": "richText",
+            "id": "body",
+            "align": "start",
+            "content": {
+              "key": "body",
+              "label": "Body",
+              "type": "richText",
+              "mode": "editable",
+              "required": false,
+              "maxLength": 600,
+              "default": {
+                "$type": "richText",
+                "html": "<p>Some <strong>bold</strong> and <em>italic</em> text.</p>"
+              }
+            }
+          },
+          {
+            "$type": "button",
+            "id": "cta",
+            "variant": "primary",
+            "align": "center",
+            "label": {
+              "key": "ctaLabel",
+              "label": "Button label",
+              "type": "text",
+              "mode": "editable",
+              "required": true,
+              "maxLength": 30,
+              "default": { "$type": "text", "text": "Get started" }
+            },
+            "link": {
+              "key": "ctaLink",
+              "label": "Button link",
+              "type": "link",
+              "mode": "editable",
+              "required": true,
+              "default": { "$type": "link", "target": { "kind": "url", "url": "https://example.com" } }
+            }
+          }
+        ]
+      },
+      { "$type": "spacer", "id": "gap", "size": "lg" },
+      {
+        "$type": "repeater",
+        "id": "cards",
+        "key": "cards",
+        "itemLabel": "Card",
+        "min": 1,
+        "max": 6,
+        "defaultItemCount": 3,
+        "layout": "grid-3",
+        "gap": "lg",
+        "children": [
+          {
+            "$type": "columns",
+            "id": "card-columns",
+            "ratio": "1:2",
+            "gap": "md",
+            "valign": "center",
+            "stackAt": "mobile",
+            "columns": [
+              {
+                "children": [
+                  {
+                    "$type": "image",
+                    "id": "card-image",
+                    "aspect": "1:1",
+                    "fit": "cover",
+                    "radius": "full",
+                    "image": {
+                      "key": "photo",
+                      "label": "Photo",
+                      "type": "image",
+                      "mode": "editable",
+                      "required": true,
+                      "default": { "$type": "image", "mediaId": null, "alt": "" }
+                    }
+                  }
+                ]
+              },
+              {
+                "children": [
+                  {
+                    "$type": "heading",
+                    "id": "card-title",
+                    "level": 3,
+                    "align": "start",
+                    "text": {
+                      "key": "cardTitle",
+                      "label": "Card title",
+                      "type": "text",
+                      "mode": "editable",
+                      "required": true,
+                      "default": { "$type": "text", "text": "Card title" }
+                    }
+                  },
+                  {
+                    "$type": "richText",
+                    "id": "card-body",
+                    "align": "start",
+                    "content": {
+                      "key": "cardBody",
+                      "label": "Card text",
+                      "type": "richText",
+                      "mode": "editable",
+                      "required": false,
+                      "default": { "$type": "richText", "html": "<p>Card text.</p>" }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      { "$type": "divider", "id": "rule" },
+      {
+        "$type": "contactForm",
+        "id": "form",
+        "submitLabel": {
+          "key": "submitLabel",
+          "label": "Submit label",
+          "type": "text",
+          "mode": "editable",
+          "required": true,
+          "default": { "$type": "text", "text": "Send message" }
+        },
+        "successMessage": {
+          "key": "successMessage",
+          "label": "Success message",
+          "type": "text",
+          "mode": "locked",
+          "required": true,
+          "default": { "$type": "text", "text": "Thanks — we will be in touch." }
+        }
+      }
+    ]
+  }
+}

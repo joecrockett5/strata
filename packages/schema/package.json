@@ -1,0 +1,20 @@
+{
+  "name": "@strata/schema",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./content-schema.json": "../../schema/strata-content.schema.json"
+  },
+  "scripts": {
+    "gen": "node scripts/generate.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "ajv": "8.20.0",
+    "json-schema-to-typescript": "16.0.0",
+    "vitest": "5.0.5"
+  }
+}
