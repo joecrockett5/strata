@@ -1,0 +1,42 @@
+@* A whole page body: skip link, global header, main, global footer. Mirrors PageView.tsx. *@
+@{
+    var page = Document.Pages.FirstOrDefault(p => p.Id == PageId);
+}
+<SiteRoot Theme="Document.Theme">
+    <a class="st-skip-link" href="#main">Skip to content</a>
+    @if (Renderable(Document.Header) is { } header)
+    {
+        <header class="st-site-header"><SectionView Definition="header.Definition" Instance="header.Instance" Context="Context" /></header>
+    }
+    <main id="main" class="st-main" tabindex="-1">
+        @if (page is not null)
+        {
+            @foreach (var instance in page.Sections)
+            {
+                @if (Renderable(instance) is { } section)
+                {
+                    <SectionView @key="instance.Id" Definition="section.Definition" Instance="section.Instance" Context="Context" />
+                }
+            }
+        }
+    </main>
+    @if (Renderable(Document.Footer) is { } footer)
+    {
+        <footer class="st-site-footer"><SectionView Definition="footer.Definition" Instance="footer.Instance" Context="Context" /></footer>
+    }
+</SiteRoot>
+
+@code {
+    [Parameter, EditorRequired] public required SiteDocument Document { get; set; }
+    [Parameter, EditorRequired] public required Guid PageId { get; set; }
+
+    /// <summary>Section definitions keyed by "typeId@version".</summary>
+    [Parameter, EditorRequired] public required IReadOnlyDictionary<string, SectionDefinition> Definitions { get; set; }
+
+    [Parameter, EditorRequired] public required RenderContext Context { get; set; }
+
+    private (SectionDefinition Definition, SectionInstance Instance)? Renderable(SectionInstance? instance) =>
+        instance is { Hidden: false } && Definitions.TryGetValue(instance.VersionRef.ToString(), out var definition)
+            ? (definition, instance)
+            : null;
+}

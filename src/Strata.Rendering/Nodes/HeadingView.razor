@@ -1,0 +1,20 @@
+@{
+    var value = RenderRules.ValueOf<TextValue>(Node.Text, Scope);
+    var css = Css.Classes("st-heading", $"st-align-{Css.Token(Node.Align)}");
+}
+@* Empty headings are omitted from published output (they would be announced as blank). *@
+@if (!RenderRules.IsBlank(value.Text))
+{
+    switch (Node.Level)
+    {
+        case 1: <h1 class="@css">@value.Text</h1> break;
+        case 2: <h2 class="@css">@value.Text</h2> break;
+        case 3: <h3 class="@css">@value.Text</h3> break;
+        default: <h4 class="@css">@value.Text</h4> break;
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public required HeadingNode Node { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

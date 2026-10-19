@@ -1,0 +1,25 @@
+@{
+    var site = State.Context.Site;
+    var listId = $"nav-{Scope.InstanceId}";
+}
+<nav class="st-nav" aria-label="Main">
+    <a class="st-nav__brand" href="@site.HomeHref">
+        @if (site.Logo?.MediaId is { } logoId)
+        {
+            <img class="st-nav__logo" src="@State.Context.MediaUrl(logoId)" alt="@site.Logo.Alt" />
+        }
+        <span class="st-nav__name">@site.FirmName</span>
+    </a>
+    <button class="st-nav__toggle" type="button" aria-expanded="false" aria-controls="@listId">Menu</button>
+    <ul class="st-nav__links" id="@listId">
+        @foreach (var link in site.Nav)
+        {
+            <li><a href="@link.Href" aria-current="@(link.Current ? "page" : null)">@link.Title</a></li>
+        }
+    </ul>
+</nav>
+
+@code {
+    [CascadingParameter] public required SectionRenderState State { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

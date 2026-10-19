@@ -1,0 +1,13 @@
+@{
+    var value = RenderRules.ValueOf<RichTextValue>(Node.Content, Scope);
+}
+@if (!RenderRules.IsBlank(value.Html))
+{
+    @* Sanitised against a strict allowlist when it was saved. *@
+    <div class="@Css.Classes("st-richtext", $"st-align-{Css.Token(Node.Align)}")">@((MarkupString)value.Html)</div>
+}
+
+@code {
+    [Parameter, EditorRequired] public required RichTextNode Node { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

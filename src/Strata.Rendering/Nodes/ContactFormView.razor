@@ -1,0 +1,54 @@
+@{
+    var submitLabel = RenderRules.ValueOf<TextValue>(Node.SubmitLabel, Scope);
+    var successMessage = RenderRules.ValueOf<TextValue>(Node.SuccessMessage, Scope);
+    var state = State.Context.FormState is { } s && s.SectionId == Scope.InstanceId ? s : null;
+    var invalid = state is { Status: ContactFormStatus.Invalid } ? state : null;
+    var prefix = $"contact-{Scope.InstanceId}";
+}
+@if (state is { Status: ContactFormStatus.Success })
+{
+    <p class="st-form__success" role="status">@successMessage.Text</p>
+}
+else
+{
+    <form class="st-form" method="post" action="@State.Context.FormAction" novalidate="@(invalid is not null)">
+        <input type="hidden" name="sectionId" value="@Scope.InstanceId" />
+        <input type="hidden" name="pageId" value="@State.Context.PageId" />
+        @foreach (var field in ContactFields.All)
+        {
+            var id = $"{prefix}-{field.Name}";
+            var errorId = $"{id}-error";
+            var error = invalid?.Errors?.GetValueOrDefault(field.Name);
+            var value = invalid?.Values?.GetValueOrDefault(field.Name);
+            <div class="st-form__field">
+                <label for="@id">@field.Label@if (!field.Required)
+                    {<span class="st-form__optional"> (optional)</span>}</label>
+                @if (field.Type == "textarea")
+                {
+                    <textarea id="@id" name="@field.Name" required="@field.Required" maxlength="@field.MaxLength" aria-invalid="@(error is null ? null : "true")" aria-describedby="@(error is null ? null : errorId)" rows="6">@value</textarea>
+                }
+                else
+                {
+                    <input type="@field.Type" id="@id" name="@field.Name" required="@field.Required" maxlength="@field.MaxLength" autocomplete="@field.AutoComplete" value="@value" aria-invalid="@(error is null ? null : "true")" aria-describedby="@(error is null ? null : errorId)" />
+                }
+                @if (error is not null)
+                {
+                    <p class="st-form__error" id="@errorId">@error</p>
+                }
+            </div>
+        }
+        <div class="st-form__hp" aria-hidden="true">
+            <label for="@($"{prefix}-website")">Website</label>
+            <input id="@($"{prefix}-website")" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <div class="st-button-row">
+            <button class="st-button st-button--primary" type="submit">@submitLabel.Text</button>
+        </div>
+    </form>
+}
+
+@code {
+    [CascadingParameter] public required SectionRenderState State { get; set; }
+    [Parameter, EditorRequired] public required ContactFormNode Node { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

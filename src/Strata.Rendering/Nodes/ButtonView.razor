@@ -1,0 +1,13 @@
+@{
+    var label = RenderRules.ValueOf<TextValue>(Node.Label, Scope);
+    var link = RenderRules.ValueOf<LinkValue>(Node.Link, Scope);
+}
+<div class="@Css.Classes("st-button-row", $"st-align-{Css.Token(Node.Align)}")">
+    <a class="@Css.Classes("st-button", $"st-button--{Css.Token(Node.Variant)}")" href="@RenderRules.HrefOf(link, State.Context)">@label.Text</a>
+</div>
+
+@code {
+    [CascadingParameter] public required SectionRenderState State { get; set; }
+    [Parameter, EditorRequired] public required ButtonNode Node { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

@@ -1,0 +1,15 @@
+<div class="@Css.Classes("st-repeater", $"st-repeater--{Css.Token(Node.Layout)}", $"st-gap-{Css.Token(Node.Gap)}")">
+    @foreach (var item in RenderRules.RepeaterItems(Node, State.Instance))
+    {
+        <div class="st-repeater__item">
+            <ChildNodes Node="Node" Path="@Path" Scope="@(new SlotScope(Scope.InstanceId, item.Values))" />
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter] public required SectionRenderState State { get; set; }
+    [Parameter, EditorRequired] public required RepeaterNode Node { get; set; }
+    [Parameter, EditorRequired] public required string Path { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

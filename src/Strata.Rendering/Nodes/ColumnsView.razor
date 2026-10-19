@@ -1,0 +1,19 @@
+<div class="@Css.Classes("st-columns", $"st-columns--ratio-{Css.Ratio(Node.Ratio)}", $"st-columns--stack-{Css.Token(Node.StackAt)}", $"st-columns--valign-{Css.Token(Node.Valign)}", $"st-gap-{Css.Token(Node.Gap)}")">
+    @for (var c = 0; c < Node.Columns.Count; c++)
+    {
+        var columnIndex = c;
+        <div class="st-columns__col">
+            @for (var i = 0; i < Node.Columns[columnIndex].Children.Count; i++)
+            {
+                var child = Node.Columns[columnIndex].Children[i];
+                <NodeView @key="child.Id" Node="child" Path="@($"{Path}/columns/{columnIndex}/children/{i}")" Scope="Scope" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public required ColumnsNode Node { get; set; }
+    [Parameter, EditorRequired] public required string Path { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

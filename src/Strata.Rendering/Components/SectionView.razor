@@ -1,0 +1,25 @@
+@* One section instance. Mirrors SectionView.tsx. *@
+@{
+    var root = Definition.Root;
+    var scope = new SlotScope(Instance.Id, Instance.Values);
+    var background = root.BackgroundImage is null ? null : RenderRules.ValueOf<ImageValue>(root.BackgroundImage, scope);
+    var hasBackgroundImage = background?.MediaId is not null;
+}
+<CascadingValue Value="@(new SectionRenderState(Context, Definition, Instance))" IsFixed="true">
+    <section id="@RenderRules.SectionDomId(Instance.Id)"
+             class="@Css.Classes("st-section", $"st-section--bg-{Css.Token(root.Background)}", $"st-section--pad-{Css.Token(root.PaddingY)}", $"st-section--width-{Css.Token(root.Width)}", hasBackgroundImage ? "st-section--has-bg-image" : null)">
+        @if (hasBackgroundImage)
+        {
+            <img class="st-section__bg" src="@Context.MediaUrl(background!.MediaId!.Value)" alt="@background.Alt" />
+        }
+        <div class="st-section__inner">
+            <ChildNodes Node="root" Path="/root" Scope="scope" />
+        </div>
+    </section>
+</CascadingValue>
+
+@code {
+    [Parameter, EditorRequired] public required SectionDefinition Definition { get; set; }
+    [Parameter, EditorRequired] public required SectionInstance Instance { get; set; }
+    [Parameter, EditorRequired] public required RenderContext Context { get; set; }
+}

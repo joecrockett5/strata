@@ -1,0 +1,10 @@
+@foreach (var (child, index) in Node.ChildNodes().Select((child, index) => (child, index)))
+{
+    <NodeView @key="child.Id" Node="child" Path="@($"{Path}/children/{index}")" Scope="Scope" />
+}
+
+@code {
+    [Parameter, EditorRequired] public required Node Node { get; set; }
+    [Parameter, EditorRequired] public required string Path { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

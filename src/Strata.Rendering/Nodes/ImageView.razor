@@ -1,0 +1,15 @@
+@{
+    var value = RenderRules.ValueOf<ImageValue>(Node.Image, Scope);
+}
+@if (value.MediaId is { } mediaId)
+{
+    <div class="@Css.Classes("st-image", $"st-image--aspect-{Css.Ratio(Node.Aspect)}", $"st-image--fit-{Css.Token(Node.Fit)}", $"st-image--radius-{Css.Token(Node.Radius)}")">
+        <img src="@State.Context.MediaUrl(mediaId)" alt="@value.Alt" loading="lazy" decoding="async" />
+    </div>
+}
+
+@code {
+    [CascadingParameter] public required SectionRenderState State { get; set; }
+    [Parameter, EditorRequired] public required ImageNode Node { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}

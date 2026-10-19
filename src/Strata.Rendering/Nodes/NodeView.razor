@@ -1,0 +1,44 @@
+@* Renders one primitive. Mirrors nodes/NodeView.tsx. *@
+@switch (Node)
+{
+    case StackNode stack:
+        <div class="@Css.Classes("st-stack", $"st-stack--align-{Css.Token(stack.Align)}", $"st-gap-{Css.Token(stack.Gap)}")"><ChildNodes Node="stack" Path="@Path" Scope="Scope" /></div>
+        break;
+    case ColumnsNode columns:
+        <ColumnsView Node="columns" Path="@Path" Scope="Scope" />
+        break;
+    case HeadingNode heading:
+        <HeadingView Node="heading" Scope="Scope" />
+        break;
+    case RichTextNode richText:
+        <RichTextView Node="richText" Scope="Scope" />
+        break;
+    case ImageNode image:
+        <ImageView Node="image" Scope="Scope" />
+        break;
+    case ButtonNode button:
+        <ButtonView Node="button" Scope="Scope" />
+        break;
+    case RepeaterNode repeater:
+        <RepeaterView Node="repeater" Path="@Path" Scope="Scope" />
+        break;
+    case NavNode:
+        <NavView Scope="Scope" />
+        break;
+    case ContactFormNode form:
+        <ContactFormView Node="form" Scope="Scope" />
+        break;
+    case SpacerNode spacer:
+        <div class="@Css.Classes("st-spacer", $"st-spacer--{Css.Token(spacer.Size)}")" aria-hidden="true"></div>
+        break;
+    case DividerNode:
+        <hr class="st-divider" />
+        break;
+    // SectionNode is only valid as the root, which SectionView renders.
+}
+
+@code {
+    [Parameter, EditorRequired] public required Node Node { get; set; }
+    [Parameter, EditorRequired] public required string Path { get; set; }
+    [Parameter, EditorRequired] public required SlotScope Scope { get; set; }
+}
