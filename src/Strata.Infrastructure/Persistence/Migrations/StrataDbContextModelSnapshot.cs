@@ -347,6 +347,68 @@ namespace Strata.Infrastructure.Persistence.Migrations
                     b.ToTable("section_type_versions", (string)null);
                 });
 
+            modelBuilder.Entity("Strata.Domain.Sites.ContactSubmission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
+                        .HasColumnName("message");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid>("PageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("page_id");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("phone");
+
+                    b.Property<Guid>("PublishedVersionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("published_version_id");
+
+                    b.Property<Guid>("SectionInstanceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("section_instance_id");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("site_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_contact_submissions");
+
+                    b.HasIndex("PublishedVersionId")
+                        .HasDatabaseName("ix_contact_submissions_published_version_id");
+
+                    b.HasIndex("SiteId", "CreatedAt")
+                        .HasDatabaseName("ix_contact_submissions_site_id_created_at");
+
+                    b.ToTable("contact_submissions", (string)null);
+                });
+
             modelBuilder.Entity("Strata.Domain.Sites.PublishedSiteVersion", b =>
                 {
                     b.Property<Guid>("Id")
@@ -795,6 +857,23 @@ namespace Strata.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_section_type_versions_section_types_section_type_id");
+                });
+
+            modelBuilder.Entity("Strata.Domain.Sites.ContactSubmission", b =>
+                {
+                    b.HasOne("Strata.Domain.Sites.PublishedSiteVersion", null)
+                        .WithMany()
+                        .HasForeignKey("PublishedVersionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_contact_submissions_published_site_versions_published_versi");
+
+                    b.HasOne("Strata.Domain.Sites.Site", null)
+                        .WithMany()
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_contact_submissions_sites_site_id");
                 });
 
             modelBuilder.Entity("Strata.Domain.Sites.PublishedSiteVersion", b =>

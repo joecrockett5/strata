@@ -37,3 +37,19 @@ internal sealed class PublishedSiteVersionConfiguration : IEntityTypeConfigurati
         builder.HasOne<StrataUser>().WithMany().HasForeignKey(x => x.PublishedBy).OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+internal sealed class ContactSubmissionConfiguration : IEntityTypeConfiguration<ContactSubmission>
+{
+    public void Configure(EntityTypeBuilder<ContactSubmission> builder)
+    {
+        builder.ToTable("contact_submissions");
+        builder.HasKey(x => x.Id);
+        builder.HasIndex(x => new { x.SiteId, x.CreatedAt });
+        builder.Property(x => x.Name).HasMaxLength(100);
+        builder.Property(x => x.Email).HasMaxLength(200);
+        builder.Property(x => x.Phone).HasMaxLength(40);
+        builder.Property(x => x.Message).HasMaxLength(4000);
+        builder.HasOne<Site>().WithMany().HasForeignKey(x => x.SiteId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne<PublishedSiteVersion>().WithMany().HasForeignKey(x => x.PublishedVersionId).OnDelete(DeleteBehavior.Cascade);
+    }
+}

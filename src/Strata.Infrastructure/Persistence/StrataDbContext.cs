@@ -20,6 +20,7 @@ public sealed class StrataDbContext(DbContextOptions<StrataDbContext> options)
     public DbSet<Site> Sites => Set<Site>();
     public DbSet<PublishedSiteVersion> PublishedSiteVersions => Set<PublishedSiteVersion>();
     public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
+    public DbSet<ContactSubmission> ContactSubmissions => Set<ContactSubmission>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
