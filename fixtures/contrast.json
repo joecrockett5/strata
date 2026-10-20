@@ -1,0 +1,65 @@
+{
+  "$comment": "WCAG 2.x contrast ratios (rounded to 2 dp) shared by the TS editor and .NET publish checks. AA for normal text is 4.5:1.",
+  "vectors": [
+    {
+      "foreground": "#000000",
+      "background": "#ffffff",
+      "ratio": 21.0,
+      "passesAA": true
+    },
+    {
+      "foreground": "#ffffff",
+      "background": "#ffffff",
+      "ratio": 1.0,
+      "passesAA": false
+    },
+    {
+      "foreground": "#777777",
+      "background": "#ffffff",
+      "ratio": 4.48,
+      "passesAA": false
+    },
+    {
+      "foreground": "#767676",
+      "background": "#ffffff",
+      "ratio": 4.54,
+      "passesAA": true
+    },
+    {
+      "foreground": "#1f4e5f",
+      "background": "#ffffff",
+      "ratio": 9.08,
+      "passesAA": true
+    },
+    {
+      "foreground": "#c9822b",
+      "background": "#ffffff",
+      "ratio": 3.13,
+      "passesAA": false
+    },
+    {
+      "foreground": "#1c2321",
+      "background": "#f3f5f4",
+      "ratio": 14.62,
+      "passesAA": true
+    },
+    {
+      "foreground": "#0b5d7a",
+      "background": "#ffffff",
+      "ratio": 7.34,
+      "passesAA": true
+    },
+    {
+      "foreground": "#e0a526",
+      "background": "#10232b",
+      "ratio": 7.38,
+      "passesAA": true
+    },
+    {
+      "foreground": "#ff0000",
+      "background": "#00ff00",
+      "ratio": 2.91,
+      "passesAA": false
+    }
+  ]
+}
