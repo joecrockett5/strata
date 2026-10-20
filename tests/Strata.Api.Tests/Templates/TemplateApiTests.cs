@@ -74,4 +74,20 @@ public sealed class TemplateApiTests(PostgresFixture postgres) : ApiTestBase(pos
 
         await response.ShouldBeRejectedWithAsync(ViolationCodes.SchemaInvalid);
     }
+
+    [Fact]
+    public async Task Seeded_theme_presets_are_listed_for_designers_and_owners()
+    {
+        foreach (var http in new[] { (await DesignerAsync()).Http, (await OwnerAsync()).Http })
+        {
+            var presets = await http.GetFromJsonAsync<JsonElement[]>("/api/theme-presets", TestContext.Current.CancellationToken);
+
+            var names = presets!.Select(p => p.GetProperty("name").GetString()).ToList();
+            names.ShouldContain("Strata default");
+            names.ShouldContain("Coastal");
+            names.ShouldContain("Ink");
+            var seededDefault = presets!.Single(p => p.GetProperty("name").GetString() == "Strata default");
+            ContentJson.Deserialize<Theme>(seededDefault.GetProperty("theme")).ShouldBe(Theme.Default);
+        }
+    }
 }

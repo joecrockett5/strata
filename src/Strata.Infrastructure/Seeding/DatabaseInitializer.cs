@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Strata.Domain.Identity;
+using Strata.Domain.Templates;
 using Strata.Infrastructure.Identity;
 using Strata.Infrastructure.Persistence;
 
@@ -14,6 +15,7 @@ public sealed partial class DatabaseInitializer(
     RoleManager<IdentityRole<Guid>> roleManager,
     UserManager<StrataUser> userManager,
     IOptions<SeedOptions> seedOptions,
+    TimeProvider clock,
     ILogger<DatabaseInitializer> logger)
 {
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
@@ -37,6 +39,24 @@ public sealed partial class DatabaseInitializer(
         {
             await EnsureUserAsync(seed);
         }
+
+        await EnsureThemePresetsAsync(cancellationToken);
+    }
+
+    /// <summary>Adds the starter presets to an empty table (designers may rename or delete them later).</summary>
+    private async Task EnsureThemePresetsAsync(CancellationToken cancellationToken)
+    {
+        if (await db.ThemePresets.AnyAsync(cancellationToken))
+        {
+            return;
+        }
+
+        foreach (var (name, theme) in ThemePresetSeed.All)
+        {
+            db.ThemePresets.Add(ThemePreset.Create(name, theme, clock.GetUtcNow()));
+        }
+
+        await db.SaveChangesAsync(cancellationToken);
     }
 
     private async Task EnsureUserAsync(SeedUser seed)
