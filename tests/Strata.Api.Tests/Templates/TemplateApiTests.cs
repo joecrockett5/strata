@@ -90,4 +90,21 @@ public sealed class TemplateApiTests(PostgresFixture postgres) : ApiTestBase(pos
             ContentJson.Deserialize<Theme>(seededDefault.GetProperty("theme")).ShouldBe(Theme.Default);
         }
     }
+
+    [Fact]
+    public async Task Template_without_a_description_can_be_saved()
+    {
+        var designer = await DesignerAsync();
+        var (id, revision) = await designer.CreateTemplateAsync("No description");
+        using var request = new HttpRequestMessage(HttpMethod.Put, $"/api/templates/{id}")
+        {
+            Content = ApiJson.Json(new { name = "No description", description = "", thumbnailMediaId = (Guid?)null, document = Site(Page("Home", "")) }),
+        };
+        request.Headers.TryAddWithoutValidation("If-Match", $"\"r{revision}\"");
+
+        using var response = await designer.Http.SendAsync(request, TestContext.Current.CancellationToken);
+
+        await response.ShouldHaveStatusAsync(HttpStatusCode.OK);
+        (await response.ReadJsonAsync()).GetProperty("description").GetString().ShouldBe(string.Empty);
+    }
 }

@@ -49,7 +49,7 @@ public sealed record CreateTemplateRequest(
 
 public sealed record UpdateTemplateRequest(
     [property: Required, StringLength(120, MinimumLength = 1)] string Name,
-    [property: Required, StringLength(500)] string Description,
+    [property: Required(AllowEmptyStrings = true), StringLength(500)] string Description,
     Guid? ThumbnailMediaId,
     JsonElement Document);
 
