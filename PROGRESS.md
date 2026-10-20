@@ -287,3 +287,61 @@ Totals: 161 .NET tests, 90 frontend unit tests, 6 e2e tests — all green.
 - Section drags have no keyboard sensor; the toolbar's move up/down buttons are the keyboard path.
 - A 400 that is not a content violation shows only "Save failed" (details are in the network
   response), e.g. if a field limit is exceeded outside the content schema.
+
+---
+
+## M5 — Publishing and public sites ✅
+
+### Built
+- **Publish checks** (`Strata.Domain/Publishing/PublishChecks.cs`, pure): errors — empty
+  required slots, images without alt text (incl. the logo), links to missing pages, missing
+  section definitions; warnings — not exactly one h1 per page, skipped heading levels (header,
+  page and footer headings in document order; empty headings are not rendered so not counted),
+  theme contrast below WCAG AA (`Contrast.cs`, same vectors as the TS helper). Hidden sections
+  are skipped; repeater items (and default items) are checked individually.
+- **API**: `GET /api/sites/{id}/publish-checks`, `POST /api/sites/{id}/publish` (optional
+  `If-Match`; errors → 422 with `errors[]`; otherwise an immutable `PublishedSiteVersion`
+  snapshot with the exact section definitions embedded), `GET /api/sites/{id}/submissions`.
+  Owner-only; other users get 404.
+- **Public sites**: `/s/{slug}/{page}` and `{slug}.localhost` (host rewrite middleware before
+  routing; links become root-relative). Rendered by `Strata.Rendering` from the published
+  snapshot only (snapshots cached in memory by version id — they are immutable). Full document
+  with `<title>` (SEO title, page title · firm), meta description, canonical, Open Graph,
+  `site.css`/`site.js`; `sitemap.xml`, `robots.txt`; styled, themed 404; strong ETag per
+  version+page with 304s, `Cache-Control: public, no-cache`; CSP and Referrer-Policy.
+- **Contact form**: `POST /s/{slug}/_contact` (works without JavaScript): the section must be a
+  published, visible contact form on that page; server-side validation (required, lengths,
+  email/phone format) re-renders the page with errors and values (422); honeypot posts get the
+  normal success redirect but are not stored; fixed-window rate limit per IP + site
+  (`PublicSites:ContactPermitLimit`/`ContactWindowSeconds`, default 5 per 10 minutes);
+  post/redirect/get (303) to the page with a success message. Only the site id is logged.
+- **Editor**: Publish dialog (saves, runs checks, groups errors/warnings, clicking an issue
+  switches page, selects and scrolls to the section; "Publish now" disabled while errors
+  remain; shows the public URL), status badge (not published / unpublished changes /
+  published), View site link, Messages page listing submissions.
+- `ContactSubmission` entity + migration; forwarded headers trusted only when
+  `ForwardedHeaders:TrustProxy` is set (Compose, where only nginx reaches the API).
+
+### Verification
+| Criterion | How |
+|---|---|
+| Publish blocked by missing alt text, then fixed and published | `e2e/tests/m5-publishing.spec.ts`: image uploaded without alt → the publish dialog lists "The image “Photo” needs alt text." and disables "Publish now"; clicking the issue selects the section; alt added → published v1 |
+| Public URL serves the change | Visitor page at `/s/{slug}/` shows the new headline, image alt and title; host routing `{slug}.localhost:5081` serves the same content |
+| Draft edits not public until next publish | Headline edited and saved (status "Unpublished changes"); public page still shows v1; after publishing v2 it shows the edit |
+| Contact submission appears in the editor | Visitor submits the public form → success message; the owner's Messages page lists it |
+| Server rules | `PublishingApiTests` (blocking errors → 422, versioning, snapshot isolation, SEO/meta/canonical/OG, ETag 304, CSP, sitemap/robots, styled 404 for unknown pages and unpublished sites, host routing, cross-owner 404s) and `ContactFormTests` (stored + 303, invalid → 422 with errors and values, honeypot dropped, wrong section → 400, rate limit → 429) |
+| Checks logic | `PublishChecksTests` (each error/warning, repeater items, hidden sections, logo) and `ContrastTests` (shared vectors) |
+| Compose | `docker compose up --build`: `/s/…` and `*.localhost` reach the API through nginx (styled 404 smoke test) |
+
+Screenshots inspected: blocked publish dialog, published page, Messages page.
+Totals: 190 .NET tests, 90 frontend unit tests, 7 e2e tests — all green.
+
+### Deviations / decisions
+- Publish checks are `GET` (no side effects) rather than the `POST` sketched in PLAN.md.
+- Non-ASCII characters in published HTML are emitted as numeric entities by Razor's default
+  encoder; valid HTML, slightly larger output.
+- Published pages always revalidate (`no-cache` + ETag) so a new publish is visible
+  immediately; 304s keep it cheap.
+
+### Known issues
+- The rate limiter is in-memory per API instance (fine for a single instance).

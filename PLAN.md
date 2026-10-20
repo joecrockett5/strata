@@ -220,7 +220,7 @@ RFC 9457 ProblemDetails; content-validation failures are **422** with an `errors
 | Library | `GET /api/library` (latest published, non-archived), `GET /api/section-definitions?refs=id@v,…` | Designer, SiteOwner |
 | Theme presets | `GET /api/theme-presets`, `POST`, `PUT/DELETE /api/theme-presets/{id}` | read: any; write: Designer |
 | Templates | `GET /api/templates`, `POST`, `GET/PUT /api/templates/{id}` (draft, `If-Match`), `POST …/{id}/versions`, `POST …/{id}/archive` | Designer (owners: `GET /api/templates/published`) |
-| Sites | `GET /api/sites`, `POST /api/sites` (from template version or blank), `GET /api/sites/{id}`, `PATCH /api/sites/{id}` (name, slug), `PUT /api/sites/{id}/draft` (`If-Match`), `DELETE /api/sites/{id}`, `POST …/{id}/publish-checks`, `POST …/{id}/publish`, `GET …/{id}/submissions` | SiteOwner (own sites only — others get 404) |
+| Sites | `GET /api/sites`, `POST /api/sites` (from template version or blank), `GET /api/sites/{id}`, `PATCH /api/sites/{id}` (name, slug), `PUT /api/sites/{id}/draft` (`If-Match`), `DELETE /api/sites/{id}`, `GET …/{id}/publish-checks`, `POST …/{id}/publish`, `GET …/{id}/submissions` | SiteOwner (own sites only — others get 404) |
 | Media | `POST /api/media` (multipart), `GET /api/media` | any authenticated |
 | Files | `GET /media/{id}` | public (unguessable id; needed by public sites) |
 | Public | `GET /s/{siteSlug}/{*pagePath}`, `/s/{siteSlug}/sitemap.xml`, `/s/{siteSlug}/robots.txt`, `POST /s/{siteSlug}/_contact`; the same on `{siteSlug}.localhost:{port}` | anon |

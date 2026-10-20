@@ -57,6 +57,8 @@ starting work. Keep all three current.
   document ops + permissions mirroring `LockRules`), `editorState.ts` (store/commands/context),
   `SiteEditor.tsx` (shell + DnD), `canvas/` (adapter, inline editors, overlay), `panels/`,
   `dialogs/`, `sites/`, `templates/`.
+- `src/Strata.Domain/Publishing` — publish checks + contrast (pure); `src/Strata.Api/Features/PublicSites`
+  — public pages, sitemap/robots, contact POST, `{slug}.localhost` host routing.
 - `fixtures/contrast.json` — WCAG vectors shared by `@strata/schema` contrast and .NET checks.
 - `packages/api-client` — generated `openapi/strata-api.json` and `src/generated.ts` (both
   committed; CI fails if stale) plus the fetch client.
