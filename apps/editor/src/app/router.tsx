@@ -2,9 +2,13 @@ import { createBrowserRouter } from "react-router";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { RequireAuth } from "@/features/auth/RequireAuth";
 import { HomeRedirect } from "@/features/home/HomeRedirect";
-import { WelcomePage } from "@/features/home/WelcomePage";
 import { SectionDesignerPage } from "@/features/section-designer/designer/SectionDesignerPage";
 import { SectionLibraryPage } from "@/features/section-designer/library/SectionLibraryPage";
+import { NewSitePage } from "@/features/site-editor/sites/NewSitePage";
+import { SiteEditorPage } from "@/features/site-editor/sites/SiteEditorPage";
+import { SitesPage } from "@/features/site-editor/sites/SitesPage";
+import { TemplateEditorPage } from "@/features/site-editor/templates/TemplateEditorPage";
+import { TemplatesPage } from "@/features/site-editor/templates/TemplatesPage";
 import { AppShell } from "./AppShell";
 
 export const router = createBrowserRouter([
@@ -37,7 +41,15 @@ export const router = createBrowserRouter([
         path: "designer/templates",
         element: (
           <RequireAuth role="Designer">
-            <WelcomePage title="Starter templates" />
+            <TemplatesPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "designer/templates/:id",
+        element: (
+          <RequireAuth role="Designer">
+            <TemplateEditorPage />
           </RequireAuth>
         ),
       },
@@ -45,7 +57,23 @@ export const router = createBrowserRouter([
         path: "sites",
         element: (
           <RequireAuth role="SiteOwner">
-            <WelcomePage title="My sites" />
+            <SitesPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "sites/new",
+        element: (
+          <RequireAuth role="SiteOwner">
+            <NewSitePage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "sites/:id",
+        element: (
+          <RequireAuth role="SiteOwner">
+            <SiteEditorPage />
           </RequireAuth>
         ),
       },
