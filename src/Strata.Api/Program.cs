@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Strata.Api.Features.Auth;
@@ -38,6 +39,16 @@ builder.Services.AddStrataInfrastructure(builder.Configuration);
 builder.Services.AddStrataAuthentication();
 builder.Services.AddHealthChecks().AddDbContextCheck<StrataDbContext>("database");
 builder.Services.AddStrataRendering();
+
+// Behind the Compose nginx proxy the client IP (rate limiting) and scheme (canonical URLs) come from
+// X-Forwarded-* headers. Only enable this where the API is reachable solely through the proxy.
+var trustProxy = builder.Configuration.GetValue("ForwardedHeaders:TrustProxy", false);
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 builder.Services.AddMemoryCache();
 
 // Contact forms: a fixed window per visitor IP and site.
@@ -64,6 +75,11 @@ if (!isOpenApiGeneration && app.Configuration.GetValue("Database:InitializeOnSta
 {
     await using var scope = app.Services.CreateAsyncScope();
     await scope.ServiceProvider.GetRequiredService<DatabaseInitializer>().InitializeAsync();
+}
+
+if (trustProxy)
+{
+    app.UseForwardedHeaders();
 }
 
 app.UseExceptionHandler();

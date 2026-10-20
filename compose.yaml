@@ -26,6 +26,8 @@ services:
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__Strata: Host=db;Port=5432;Database=strata;Username=strata;Password=strata
       Storage__RootPath: /data/media
+      # Only nginx can reach the API, so its X-Forwarded-* headers are trusted.
+      ForwardedHeaders__TrustProxy: "true"
     volumes:
       - media-data:/data/media
     depends_on:
