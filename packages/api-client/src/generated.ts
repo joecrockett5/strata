@@ -460,11 +460,11 @@ export interface components {
             fileName: string;
             contentType: string;
             /** Format: int64 */
-            byteSize: number | string;
+            byteSize: number;
             /** Format: int32 */
-            width: number | string;
+            width: number;
             /** Format: int32 */
-            height: number | string;
+            height: number;
             /** Format: date-time */
             createdAt: string;
         };
@@ -473,7 +473,7 @@ export interface components {
             /** Format: uuid */
             sectionTypeId: string;
             /** Format: int32 */
-            version: number | string;
+            version: number;
             name: string;
             category: string;
             definition: components["schemas"]["JsonElement"];
@@ -483,13 +483,13 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** Format: int32 */
-            version: number | string;
+            version: number;
             name: string;
             description: string;
             /** Format: uuid */
             thumbnailMediaId: null | string;
             /** Format: int32 */
-            pageCount: number | string;
+            pageCount: number;
         };
         SaveSiteDraftRequest: {
             document: components["schemas"]["JsonElement"];
@@ -497,7 +497,7 @@ export interface components {
         /** @description Response to a draft save: the new revision and the stored (sanitised) document. */
         SaveSiteDraftResponse: {
             /** Format: int64 */
-            revision: number | string;
+            revision: number;
             hasUnpublishedChanges: boolean;
             document: components["schemas"]["JsonElement"];
         };
@@ -512,11 +512,11 @@ export interface components {
             name: string;
             category: string;
             /** Format: int32 */
-            latestVersion: number | string;
+            latestVersion: number;
             hasUnpublishedChanges: boolean;
             archived: boolean;
             /** Format: int64 */
-            revision: number | string;
+            revision: number;
             draft: components["schemas"]["JsonElement"];
             publishIssues: components["schemas"]["ContentViolation"][];
             /** Format: date-time */
@@ -528,7 +528,7 @@ export interface components {
             name: string;
             category: string;
             /** Format: int32 */
-            latestVersion: number | string;
+            latestVersion: number;
             hasUnpublishedChanges: boolean;
             archived: boolean;
             /** Format: date-time */
@@ -538,7 +538,7 @@ export interface components {
             /** Format: uuid */
             sectionTypeId: string;
             /** Format: int32 */
-            version: number | string;
+            version: number;
             name: string;
             category: string;
             definition: components["schemas"]["JsonElement"];
@@ -552,13 +552,13 @@ export interface components {
             name: string;
             slug: string;
             /** Format: int64 */
-            revision: number | string;
+            revision: number;
             isPublished: boolean;
             hasUnpublishedChanges: boolean;
             /** Format: uuid */
             sourceTemplateId: null | string;
             /** Format: int32 */
-            sourceTemplateVersion: null | number | string;
+            sourceTemplateVersion: null | number;
             document: components["schemas"]["JsonElement"];
             sections: components["schemas"]["PublishedSectionDto"][];
             /** Format: date-time */
@@ -583,11 +583,11 @@ export interface components {
             /** Format: uuid */
             thumbnailMediaId: null | string;
             /** Format: int32 */
-            latestVersion: number | string;
+            latestVersion: number;
             hasUnpublishedChanges: boolean;
             archived: boolean;
             /** Format: int64 */
-            revision: number | string;
+            revision: number;
             document: components["schemas"]["JsonElement"];
             sections: components["schemas"]["PublishedSectionDto"][];
             /** Format: date-time */
@@ -601,7 +601,7 @@ export interface components {
             /** Format: uuid */
             thumbnailMediaId: null | string;
             /** Format: int32 */
-            latestVersion: number | string;
+            latestVersion: number;
             hasUnpublishedChanges: boolean;
             archived: boolean;
             /** Format: date-time */
@@ -611,7 +611,7 @@ export interface components {
             /** Format: uuid */
             templateId: string;
             /** Format: int32 */
-            version: number | string;
+            version: number;
             /** Format: date-time */
             publishedAt: string;
         };

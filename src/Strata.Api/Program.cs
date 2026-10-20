@@ -25,8 +25,10 @@ builder.Services.AddScoped<ContentWritePipeline>();
 builder.Services.Configure<FormOptions>(options => options.MultipartBodyLengthLimit = 6 * 1024 * 1024);
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
-    // Enums travel as camelCase strings, matching the content schema.
+    // Enums travel as camelCase strings, matching the content schema; numbers are numbers
+    // (the web default also accepts numeric strings, which would leak into the OpenAPI types).
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
 });
 builder.Services.AddOpenApi();
 builder.Services.AddStrataInfrastructure(builder.Configuration);
