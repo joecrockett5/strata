@@ -53,6 +53,11 @@ starting work. Keep all three current.
 - `apps/editor/src/features/section-designer` — `tree.ts` (pure tree ops + placement rules),
   `outlineModel.ts` (outline rows, drop zones), `primitives.ts` (palette + factories),
   `designer/` (page, state/commands, panels, canvas), `library/`.
+- `apps/editor/src/features/site-editor` — shared site/template editor: `siteModel.ts` (pure
+  document ops + permissions mirroring `LockRules`), `editorState.ts` (store/commands/context),
+  `SiteEditor.tsx` (shell + DnD), `canvas/` (adapter, inline editors, overlay), `panels/`,
+  `dialogs/`, `sites/`, `templates/`.
+- `fixtures/contrast.json` — WCAG vectors shared by `@strata/schema` contrast and .NET checks.
 - `packages/api-client` — generated `openapi/strata-api.json` and `src/generated.ts` (both
   committed; CI fails if stale) plus the fetch client.
 - `e2e/` — Playwright; `support/` has login helpers, seeded accounts and `dnd.ts` (dnd-kit needs
@@ -80,4 +85,7 @@ starting work. Keep all three current.
 - The React renderer must not import editor-only libraries.
 - Format with Prettier (`pnpm format`); committed files are expected to pass `pnpm format:check`.
 - Editor-only markup inside the canvas uses `stx-`/`data-stx-*`; it must never reach published HTML.
+- dnd-kit: resolve drops in `onDragOver` *and* from the final `onDragEnd` event (`over` lags
+  `onDragMove`); give draggables a node ref; let the canvas iframe pass pointer events through
+  while dragging.
 - Never weaken a test or validation to make a check pass; record problems in PROGRESS.md.

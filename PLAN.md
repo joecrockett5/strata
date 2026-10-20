@@ -351,7 +351,7 @@ hidden (hiding is removal from the public site). Pages containing them cannot be
 
 | Risk | Mitigation |
 |---|---|
-| dnd-kit across an iframe boundary | Overlay-in-parent design (§6): no drag events cross documents. The section designer (M3) avoids it entirely by dragging into the outline; the site editor's overlay is the M4 spike. |
+| dnd-kit across an iframe boundary | Overlay-in-parent design (§6): no drag events cross documents. The section designer (M3) avoids it entirely by dragging into the outline; the site editor (M4) uses the overlay with the iframe set to `pointer-events: none` during drags. |
 | React/Razor markup drift | Parity fixtures for every primitive; tiny shared vocabulary of class names; renderer components written side by side. |
 | C# model drifting from JSON Schema | Schema validation on every write + discriminator-set and round-trip tests. |
 | Nested DnD in the designer tree is fiddly | Outline panel with buttons/keyboard is first-class, DnD is an enhancement. |

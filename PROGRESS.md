@@ -211,3 +211,79 @@ Totals: 160 .NET tests, 66 frontend unit tests, 4 e2e tests — all green.
   (commented in `StructurePanel.tsx`).
 - Drag and drop has no keyboard sensor; keyboard users use the outline shortcuts/buttons
   (the brief's accessible fallback).
+
+---
+
+## M4 — Site editor and starter templates ✅
+
+### Built
+- **One editor for sites and templates** (`features/site-editor/SiteEditor.tsx`); the author
+  (`owner` | `designer`) decides what lock rules apply. Templates add section lock flags
+  (none/required/locked, including on the global header/footer), theme token locks, metadata
+  (name, description, thumbnail) and "Publish version".
+- **Canvas**: `PageView` (with hidden sections) in the same-origin iframe plus an editing
+  adapter: `contentEditable="plaintext-only"` for text slots, TipTap for rich text (the
+  formatting bar lives in the editor chrome and drives the editor inside the iframe), image
+  slots open the media library + per-use alt text, buttons get a link chip that opens a
+  label/link dialog (page picker or URL), repeater items get move/remove controls and an
+  "Add …" button within min/max. Locked slots and locked sections render read-only with a
+  lock icon and tooltip. Nav links switch the edited page.
+- **Overlay** (editor document, Tailwind) aligned to section boxes measured inside the iframe
+  (Resize/MutationObserver): hover/selection outlines, a toolbar (drag handle, move up/down,
+  duplicate, hide, background image, delete, template lock select) whose buttons are disabled
+  with a reason when a lock forbids them. Library cards and section handles drop between
+  sections; during a drag the iframe lets pointer events through so dnd-kit never tracks the
+  pointer across documents.
+- **Panels**: Pages (sortable = nav order, add, duplicate, delete with lock/home guards,
+  settings dialog: title, slug, show in nav, SEO title/description), Add section (library by
+  category with live mini-previews; click appends, drag inserts), Theme (8 colours, 2 fonts,
+  radius; owners see locked tokens disabled with a lock; designers toggle locks; WCAG AA
+  warnings for text/background and onPrimary/primary; presets apply unlocked tokens only),
+  Settings (site name/address via PATCH, firm name, logo, global header/footer; template
+  metadata).
+- **Sites**: list with published/unpublished-changes badges, delete; new site from a published
+  template or blank (auto slug). **Templates**: list, create (theme preset), archive/restore.
+- `siteModel.ts`: pure document operations + permissions mirroring `LockRules` (unit tested);
+  `@strata/schema` `contrast.ts` with `fixtures/contrast.json` (shared with M5's .NET checks).
+
+### Verification
+| Criterion | How |
+|---|---|
+| Owner creates a site from a template | `e2e/tests/m4-site-editor.spec.ts` (serial): the designer test builds the template in the UI (library clicks, lock flag, brand-colour token locks, publish v1); the owner picks it on /sites/new and the canvas renders it |
+| Adds the M3 section | The Columns → Repeater → (Image + Heading + RichText) section is dragged from the library between two sections; order and rendered repeater items asserted |
+| Edits text inline | Types into the headline `contentEditable`; server draft contains the new text |
+| Locked slot cannot be edited | Locked disclaimer has no editable element, shows the lock tooltip, and no value is stored for it; the locked band's slots are read-only and its Delete button is disabled |
+| Reorders sections by drag | Drag handle moves the team grid above the hero |
+| Undo/redo | Ctrl/Cmd+Z restores the order, Shift+Ctrl/Cmd+Z re-applies it |
+| Unlocked vs locked theme colour | Accent hex changes (saved), Primary is disabled with the lock indicator and unchanged on the server |
+| Uploads an image | PNG uploaded via the image dialog with alt text; canvas shows `/media/{id}`; stored value has the alt text |
+| Also covered | Repeater "Add member", TipTap bio + Bold from the formatting bar (stored as sanitised `<strong>`), button label + page link via the dialog |
+| Unit level | `siteModel.test.ts` (permissions vs lock rules, drop-index moves, default-item materialisation, min/max, page ops), contrast vectors |
+| Server | Lock bypass tests from M1 unchanged; new regression test for empty template descriptions |
+
+Screenshots captured by the tests were inspected (template editor, owner editor with theme
+panel, uploaded image, locked tokens).
+
+Totals: 161 .NET tests, 90 frontend unit tests, 6 e2e tests — all green.
+
+### Deviations / decisions
+- The M3 section used by the M4 test is created through the API in the test's setup (same
+  Columns → Repeater → Image/Heading/RichText shape), so the spec does not depend on the M3
+  spec having run first.
+- The section toolbar is anchored top-left so it stays visible when the 1280 px canvas is wider
+  than the viewport.
+- Global header/footer are chosen in Settings rather than by drag and drop.
+- Image slots inside the canvas are wrapped in a clickable block (`stx-image-edit`) — an
+  editor-only wrapper; published markup is unchanged (parity tests untouched).
+
+### Bugs found and fixed
+- `UpdateTemplateRequest.Description` was `[Required]`, which rejects `""`; templates created
+  without a description could never be saved (400). Fixed with `AllowEmptyStrings` + test.
+- `CanvasFrame` called `onDocument(null)` whenever the callback identity changed, which cleared
+  the overlay's frame document on every render.
+- dnd-kit drop handling needs the draggable's node ref, not only its activator ref.
+
+### Known issues
+- Section drags have no keyboard sensor; the toolbar's move up/down buttons are the keyboard path.
+- A 400 that is not a content violation shows only "Save failed" (details are in the network
+  response), e.g. if a field limit is exceeded outside the content schema.
