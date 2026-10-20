@@ -12,6 +12,11 @@
 
 /* ---------------------------------------------------------------- tokens */
 
+/* Published pages: sections run edge to edge (the editor canvas resets this itself). */
+body {
+  margin: 0;
+}
+
 .st-site {
   --st-space-none: 0;
   --st-space-xs: 0.25rem;
@@ -99,7 +104,8 @@
   max-width: 100%;
 }
 
-.st-site a {
+/* Zero specificity, so component rules such as .st-button--primary set their own colours. */
+:where(.st-site) a {
   color: inherit;
 }
 
