@@ -1,12 +1,14 @@
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Strata.Api.Features.Auth;
 using Strata.Api.Features.Content;
 using Strata.Api.Features.Library;
 using Strata.Api.Features.Media;
+using Strata.Api.Features.PublicSites;
 using Strata.Api.Features.SectionTypes;
 using Strata.Api.Features.Sites;
 using Strata.Api.Features.Templates;
@@ -14,6 +16,7 @@ using Strata.Api.Infrastructure;
 using Strata.Infrastructure;
 using Strata.Infrastructure.Persistence;
 using Strata.Infrastructure.Seeding;
+using Strata.Rendering;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +37,24 @@ builder.Services.AddOpenApi();
 builder.Services.AddStrataInfrastructure(builder.Configuration);
 builder.Services.AddStrataAuthentication();
 builder.Services.AddHealthChecks().AddDbContextCheck<StrataDbContext>("database");
+builder.Services.AddStrataRendering();
+builder.Services.AddMemoryCache();
+
+// Contact forms: a fixed window per visitor IP and site.
+var contactPermits = builder.Configuration.GetValue("PublicSites:ContactPermitLimit", 5);
+var contactWindow = TimeSpan.FromSeconds(builder.Configuration.GetValue("PublicSites:ContactWindowSeconds", 600));
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy(PublicSiteEndpoints.ContactRateLimitPolicy, context => RateLimitPartition.GetFixedWindowLimiter(
+        $"{context.Connection.RemoteIpAddress}|{context.Request.RouteValues["siteSlug"]}",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = contactPermits, Window = contactWindow, QueueLimit = 0 }));
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.ContentType = "text/plain; charset=utf-8";
+        await context.HttpContext.Response.WriteAsync("Too many messages were sent from your connection. Please try again later.", cancellationToken);
+    };
+});
 
 var app = builder.Build();
 
@@ -52,6 +73,11 @@ app.Use(async (context, next) =>
     await next(context);
 });
 app.UseStatusCodePages();
+
+// {slug}.localhost is rewritten to /s/{slug}/… before routing picks an endpoint.
+app.UseMiddleware<SiteHostRouting>();
+app.UseRouting();
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -75,6 +101,8 @@ app.MapThemePresetEndpoints();
 app.MapTemplateEndpoints();
 app.MapSiteEndpoints();
 app.MapMediaEndpoints();
+app.MapSitePublishingEndpoints();
+app.MapPublicSiteEndpoints();
 
 await app.RunAsync();
 

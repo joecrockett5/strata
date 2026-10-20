@@ -406,10 +406,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sites/{id}/publish-checks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPublishChecks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sites/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PublishSite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/sites/{id}/submissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListContactSubmissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ContactSubmissionDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            pageId: string;
+            name: string;
+            email: string;
+            phone: null | string;
+            message: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
         /**
          * @description One reason a content write was rejected. Path is a JSON pointer into the
          *     submitted document; Code is stable and machine-readable.
@@ -448,6 +508,8 @@ export interface components {
         };
         /** Format: binary */
         IFormFile: string;
+        /** @enum {unknown} */
+        IssueSeverity: "error" | "warning";
         JsonElement: unknown;
         LoginRequest: {
             email: string;
@@ -467,6 +529,35 @@ export interface components {
             height: number;
             /** Format: date-time */
             createdAt: string;
+        };
+        /** @description Publish checks for the current draft revision. */
+        PublishChecksResponse: {
+            /** Format: int64 */
+            revision: number;
+            /** Format: int32 */
+            errors: number;
+            /** Format: int32 */
+            warnings: number;
+            issues: components["schemas"]["PublishIssueDto"][];
+        };
+        PublishIssueDto: {
+            severity: components["schemas"]["IssueSeverity"];
+            code: string;
+            message: string;
+            path: string;
+            /** Format: uuid */
+            pageId: null | string;
+            /** Format: uuid */
+            instanceId: null | string;
+            slotKey: null | string;
+        };
+        PublishResponse: {
+            /** Format: int32 */
+            version: number;
+            /** Format: date-time */
+            publishedAt: string;
+            url: string;
+            warnings: components["schemas"]["PublishIssueDto"][];
         };
         /** @description A published section type version (immutable) with its `SectionDefinition`. */
         PublishedSectionDto: {
@@ -1439,6 +1530,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MediaDto"];
+                };
+            };
+        };
+    };
+    GetPublishChecks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublishChecksResponse"];
+                };
+            };
+        };
+    };
+    PublishSite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublishResponse"];
+                };
+            };
+        };
+    };
+    ListContactSubmissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactSubmissionDto"][];
                 };
             };
         };

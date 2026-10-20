@@ -1042,10 +1042,147 @@
           }
         }
       }
+    },
+    "/api/sites/{id}/publish-checks": {
+      "get": {
+        "tags": [
+          "Sites"
+        ],
+        "operationId": "GetPublishChecks",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishChecksResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{id}/publish": {
+      "post": {
+        "tags": [
+          "Sites"
+        ],
+        "operationId": "PublishSite",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sites/{id}/submissions": {
+      "get": {
+        "tags": [
+          "Sites"
+        ],
+        "operationId": "ListContactSubmissions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactSubmissionDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "ContactSubmissionDto": {
+        "required": [
+          "id",
+          "pageId",
+          "name",
+          "email",
+          "phone",
+          "message",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "ContentViolation": {
         "required": [
           "code",
@@ -1200,6 +1337,12 @@
         "type": "string",
         "format": "binary"
       },
+      "IssueSeverity": {
+        "enum": [
+          "error",
+          "warning"
+        ]
+      },
       "JsonElement": { },
       "LoginRequest": {
         "required": [
@@ -1257,6 +1400,110 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "PublishChecksResponse": {
+        "required": [
+          "revision",
+          "errors",
+          "warnings",
+          "issues"
+        ],
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "errors": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warnings": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublishIssueDto"
+            }
+          }
+        },
+        "description": "Publish checks for the current draft revision."
+      },
+      "PublishIssueDto": {
+        "required": [
+          "severity",
+          "code",
+          "message",
+          "path",
+          "pageId",
+          "instanceId",
+          "slotKey"
+        ],
+        "type": "object",
+        "properties": {
+          "severity": {
+            "$ref": "#/components/schemas/IssueSeverity"
+          },
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "pageId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "instanceId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "slotKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PublishResponse": {
+        "required": [
+          "version",
+          "publishedAt",
+          "url",
+          "warnings"
+        ],
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "url": {
+            "type": "string"
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublishIssueDto"
+            }
           }
         }
       },

@@ -23,6 +23,10 @@ public sealed class StrataApiFactory(PostgresFixture postgres, bool initializeDa
         builder.UseSetting("Database:InitializeOnStartup", initializeDatabase ? "true" : "false");
         builder.UseSetting("Storage:RootPath", MediaRoot);
         builder.UseSetting("Seed:Enabled", "true");
+        foreach (var (key, value) in Settings)
+        {
+            builder.UseSetting(key, value);
+        }
 
         TestUser[] users = [Designer, Owner, OtherOwner, LoginProbe];
         for (var i = 0; i < users.Length; i++)
@@ -33,6 +37,9 @@ public sealed class StrataApiFactory(PostgresFixture postgres, bool initializeDa
             builder.UseSetting($"Seed:Users:{i}:Role", users[i].Role);
         }
     }
+
+    /// <summary>Extra configuration for this host; set before the first client is created.</summary>
+    public Dictionary<string, string> Settings { get; } = [];
 
     /// <summary>Uploaded files for this host go to a throwaway directory.</summary>
     public string MediaRoot { get; } = Path.Combine(Path.GetTempPath(), "strata-tests", Guid.NewGuid().ToString("N"));
