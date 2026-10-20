@@ -3,6 +3,8 @@ import { LoginPage } from "@/features/auth/LoginPage";
 import { RequireAuth } from "@/features/auth/RequireAuth";
 import { HomeRedirect } from "@/features/home/HomeRedirect";
 import { WelcomePage } from "@/features/home/WelcomePage";
+import { SectionDesignerPage } from "@/features/section-designer/designer/SectionDesignerPage";
+import { SectionLibraryPage } from "@/features/section-designer/library/SectionLibraryPage";
 import { AppShell } from "./AppShell";
 
 export const router = createBrowserRouter([
@@ -19,7 +21,15 @@ export const router = createBrowserRouter([
         path: "designer/sections",
         element: (
           <RequireAuth role="Designer">
-            <WelcomePage title="Section library" />
+            <SectionLibraryPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "designer/sections/:id",
+        element: (
+          <RequireAuth role="Designer">
+            <SectionDesignerPage />
           </RequireAuth>
         ),
       },
