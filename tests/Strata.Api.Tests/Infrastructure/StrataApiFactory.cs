@@ -23,6 +23,7 @@ public sealed class StrataApiFactory(PostgresFixture postgres, bool initializeDa
         builder.UseSetting("Database:InitializeOnStartup", initializeDatabase ? "true" : "false");
         builder.UseSetting("Storage:RootPath", MediaRoot);
         builder.UseSetting("Seed:Enabled", "true");
+        builder.UseSetting("Seed:DemoContent", "false"); // DemoContentTests seeds it explicitly
         foreach (var (key, value) in Settings)
         {
             builder.UseSetting(key, value);

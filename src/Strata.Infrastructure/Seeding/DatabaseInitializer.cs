@@ -6,6 +6,7 @@ using Strata.Domain.Identity;
 using Strata.Domain.Templates;
 using Strata.Infrastructure.Identity;
 using Strata.Infrastructure.Persistence;
+using Strata.Infrastructure.Seeding.Demo;
 
 namespace Strata.Infrastructure.Seeding;
 
@@ -16,6 +17,7 @@ public sealed partial class DatabaseInitializer(
     UserManager<StrataUser> userManager,
     IOptions<SeedOptions> seedOptions,
     TimeProvider clock,
+    DemoContentSeeder demoContent,
     ILogger<DatabaseInitializer> logger)
 {
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
@@ -41,6 +43,21 @@ public sealed partial class DatabaseInitializer(
         }
 
         await EnsureThemePresetsAsync(cancellationToken);
+
+        if (seedOptions.Value.DemoContent)
+        {
+            var designer = await FirstUserInRoleAsync(Roles.Designer);
+            if (designer is not null)
+            {
+                await demoContent.SeedAsync(designer.Id, (await FirstUserInRoleAsync(Roles.SiteOwner))?.Id, cancellationToken);
+            }
+        }
+    }
+
+    private async Task<StrataUser?> FirstUserInRoleAsync(string role)
+    {
+        var seed = seedOptions.Value.Users.FirstOrDefault(u => u.Role == role);
+        return seed is null ? null : await userManager.FindByEmailAsync(seed.Email);
     }
 
     /// <summary>Adds the starter presets to an empty table (designers may rename or delete them later).</summary>

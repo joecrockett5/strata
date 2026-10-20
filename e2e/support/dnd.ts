@@ -6,6 +6,7 @@ import type { Locator, Page } from "@playwright/test";
  * `at` is the vertical drop position within the target (0 = top edge, 1 = bottom edge).
  */
 export async function dragTo(page: Page, source: Locator, target: Locator, at = 0.5) {
+  await source.scrollIntoViewIfNeeded();
   const from = await source.boundingBox();
   if (!from) throw new Error("Drag source is not visible");
   await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);

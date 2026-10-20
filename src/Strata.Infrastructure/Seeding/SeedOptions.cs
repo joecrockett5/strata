@@ -7,6 +7,9 @@ public sealed class SeedOptions
 
     public bool Enabled { get; set; }
 
+    /// <summary>Seed the Harbor &amp; Pine section types, template and published demo site.</summary>
+    public bool DemoContent { get; set; } = true;
+
     public List<SeedUser> Users { get; set; } = [];
 }
 

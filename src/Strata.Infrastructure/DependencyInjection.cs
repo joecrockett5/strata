@@ -42,6 +42,7 @@ public static class DependencyInjection
 
         services.Configure<SeedOptions>(configuration.GetSection(SeedOptions.SectionName));
         services.AddScoped<DatabaseInitializer>();
+        services.AddScoped<Seeding.Demo.DemoContentSeeder>();
 
         return services;
     }
