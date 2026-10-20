@@ -208,3 +208,29 @@ export async function publishTemplateVersion(id: string, revision: number) {
       .data,
   );
 }
+
+// ---------------------------------------------------------------------------------------------
+// Publishing
+
+export type PublishChecks = Schemas["PublishChecksResponse"];
+export type PublishIssue = Schemas["PublishIssueDto"];
+export type ContactSubmission = Schemas["ContactSubmissionDto"];
+
+export async function getPublishChecks(id: string): Promise<PublishChecks> {
+  return required((await api.GET("/api/sites/{id}/publish-checks", { params: { path: { id } } })).data);
+}
+
+export async function publishSite(id: string, revision: number) {
+  return required(
+    (await api.POST("/api/sites/{id}/publish", { params: { path: { id } }, headers: ifMatch(revision) }))
+      .data,
+  );
+}
+
+export function useSubmissions(id: string) {
+  return useQuery({
+    queryKey: ["sites", id, "submissions"],
+    queryFn: async () =>
+      required((await api.GET("/api/sites/{id}/submissions", { params: { path: { id } } })).data),
+  });
+}

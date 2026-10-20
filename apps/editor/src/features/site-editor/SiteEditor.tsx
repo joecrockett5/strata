@@ -74,6 +74,13 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "settings", label: "Settings" },
 ];
 
+export interface EditorActionsApi {
+  flush: () => Promise<void>;
+  store: EditorStore;
+  /** Shows a page and selects (and scrolls to) one of its sections, e.g. from a publish issue. */
+  focus: (pageId: string | null, instanceId: string | null) => void;
+}
+
 export interface SiteEditorProps {
   author: Author;
   initial: EditorDocument;
@@ -83,7 +90,7 @@ export interface SiteEditorProps {
   backTo: string;
   title: ReactNode;
   /** Badges and buttons for the header (publish, status); receives a flush to save first. */
-  actions: (api: { flush: () => Promise<void>; store: EditorStore }) => ReactNode;
+  actions: (api: EditorActionsApi) => ReactNode;
   site?: SiteIdentity;
   onRenamed?: (identity: SiteIdentity) => void;
 }
@@ -212,6 +219,20 @@ export function SiteEditor({
     setDrop(null);
   };
 
+  const focus = useCallback((targetPage: string | null, instanceId: string | null) => {
+    if (targetPage) setPageId(targetPage);
+    setSelectedId(instanceId);
+    if (!instanceId) return;
+    // The page may need to render and be measured before its section box exists.
+    let tries = 0;
+    const scroll = () => {
+      const box = document.querySelector(`[data-testid="section-box-${CSS.escape(instanceId)}"]`);
+      if (box) box.scrollIntoView({ block: "center" });
+      else if (++tries < 20) requestAnimationFrame(scroll);
+    };
+    requestAnimationFrame(scroll);
+  }, []);
+
   const openBackgroundImage = (instance: SectionInstance, definition: SectionDefinition) => {
     const slot = definition.root.backgroundImage;
     if (slot)
@@ -259,7 +280,7 @@ export function SiteEditor({
                   <Redo2 className="size-4" />
                 </IconButton>
                 <DeviceToggle value={device} onChange={setDevice} />
-                {actions({ flush, store })}
+                {actions({ flush, store, focus })}
               </div>
             </header>
 

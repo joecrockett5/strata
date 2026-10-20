@@ -7,6 +7,7 @@ import { SectionLibraryPage } from "@/features/section-designer/library/SectionL
 import { NewSitePage } from "@/features/site-editor/sites/NewSitePage";
 import { SiteEditorPage } from "@/features/site-editor/sites/SiteEditorPage";
 import { SitesPage } from "@/features/site-editor/sites/SitesPage";
+import { SubmissionsPage } from "@/features/site-editor/sites/SubmissionsPage";
 import { TemplateEditorPage } from "@/features/site-editor/templates/TemplateEditorPage";
 import { TemplatesPage } from "@/features/site-editor/templates/TemplatesPage";
 import { AppShell } from "./AppShell";
@@ -66,6 +67,14 @@ export const router = createBrowserRouter([
         element: (
           <RequireAuth role="SiteOwner">
             <NewSitePage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "sites/:id/submissions",
+        element: (
+          <RequireAuth role="SiteOwner">
+            <SubmissionsPage />
           </RequireAuth>
         ),
       },

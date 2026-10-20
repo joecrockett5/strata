@@ -1,10 +1,13 @@
 import { useCallback, useState } from "react";
-import { useParams } from "react-router";
+import { ExternalLink, Inbox, Rocket } from "lucide-react";
+import { Link, useParams } from "react-router";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { saveSiteDraft, type SiteDetail, useSite } from "../api";
 import type { EditorDocument } from "../editorState";
 import type { SiteIdentity } from "../panels/SettingsPanel";
-import { SiteEditor } from "../SiteEditor";
+import { type EditorActionsApi, SiteEditor } from "../SiteEditor";
+import { PublishDialog } from "../dialogs/PublishDialog";
 
 export function SiteEditorPage() {
   const { id = "" } = useParams();
@@ -24,6 +27,8 @@ function OwnerSiteEditor({ detail }: { detail: SiteDetail }) {
     isPublished: detail.isPublished,
     hasUnpublishedChanges: detail.hasUnpublishedChanges,
   });
+
+  const [publishing, setPublishing] = useState<EditorActionsApi | null>(null);
 
   const save = useCallback(
     async (document: EditorDocument, revision: number) => {
@@ -50,16 +55,54 @@ function OwnerSiteEditor({ detail }: { detail: SiteDetail }) {
           <span className="text-xs text-slate-500">/s/{identity.slug}</span>
         </>
       }
-      actions={() => (
-        <span data-testid="publish-status">
-          {!status.isPublished ? (
-            <Badge tone="amber">Not published</Badge>
-          ) : status.hasUnpublishedChanges ? (
-            <Badge tone="blue">Unpublished changes</Badge>
-          ) : (
-            <Badge tone="green">Published</Badge>
-          )}
-        </span>
+      actions={(editor) => (
+        <>
+          <span data-testid="publish-status">
+            {!status.isPublished ? (
+              <Badge tone="amber">Not published</Badge>
+            ) : status.hasUnpublishedChanges ? (
+              <Badge tone="blue">Unpublished changes</Badge>
+            ) : (
+              <Badge tone="green">Published</Badge>
+            )}
+          </span>
+          <Link
+            to={`/sites/${detail.id}/submissions`}
+            className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-sm text-slate-700 hover:bg-slate-100"
+          >
+            <Inbox className="size-4" aria-hidden /> Messages
+          </Link>
+          {status.isPublished ? (
+            <a
+              href={`/s/${identity.slug}/`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-sm text-slate-700 hover:bg-slate-100"
+            >
+              <ExternalLink className="size-4" aria-hidden /> View site
+            </a>
+          ) : null}
+          <Button
+            size="sm"
+            onClick={() => {
+              setPublishing(editor);
+            }}
+          >
+            <Rocket className="size-4" aria-hidden /> Publish
+          </Button>
+          {publishing ? (
+            <PublishDialog
+              siteId={detail.id}
+              editor={publishing}
+              onClose={() => {
+                setPublishing(null);
+              }}
+              onPublished={() => {
+                setStatus({ isPublished: true, hasUnpublishedChanges: false });
+              }}
+            />
+          ) : null}
+        </>
       )}
     />
   );
