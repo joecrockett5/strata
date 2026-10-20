@@ -1,67 +1,12 @@
-import { type EditingAdapter, EditingAdapterContext, SectionView, SiteRoot } from "@strata/renderer";
-import type { SectionDefinition, Theme } from "@strata/schema";
+import { type EditingAdapter, EditingAdapterContext, SectionView } from "@strata/renderer";
+import type { Theme } from "@strata/schema";
 import { type MouseEvent, type ReactNode, useMemo, useState } from "react";
 import { useStore } from "zustand";
 import { CanvasFrame } from "@/components/canvas/CanvasFrame";
-import { sampleContext, sampleInstance } from "./sample";
+import { imagePlaceholders } from "@/components/canvas/placeholders";
+import { sampleContext, sampleInstance } from "@/components/canvas/sample";
+import { InertSite } from "@/components/canvas/SectionPreview";
 import { type Selection, useDesigner } from "./state";
-
-/**
- * Inline images without media render nothing in published markup; while designing, a placeholder
- * keeps the layout visible. The section background slot stays empty until an image is chosen.
- */
-function imagePlaceholders(definition: SectionDefinition): NonNullable<EditingAdapter["image"]> {
-  const backgroundKey = definition.root.backgroundImage?.key;
-  return ({ slot, value, element }) => {
-    if (element || slot.key === backgroundKey) return element;
-    return (
-      <div className="stx-image-placeholder" role="img" aria-label={`${slot.label} (no image yet)`}>
-        {slot.label}
-        {value.alt ? ` · “${value.alt}”` : ""}
-      </div>
-    );
-  };
-}
-
-/** Published markup with sample content (plus image placeholders), e.g. for side-by-side previews. */
-export function SectionPreview({
-  definition,
-  theme,
-  sectionTypeId,
-}: {
-  definition: SectionDefinition;
-  theme: Theme;
-  sectionTypeId: string;
-}) {
-  const adapter = useMemo<EditingAdapter>(() => ({ image: imagePlaceholders(definition) }), [definition]);
-  return (
-    <EditingAdapterContext.Provider value={adapter}>
-      <InertSite theme={theme}>
-        <SectionView
-          definition={definition}
-          instance={sampleInstance(sectionTypeId)}
-          context={sampleContext}
-        />
-      </InertSite>
-    </EditingAdapterContext.Provider>
-  );
-}
-
-/** Links and forms in the canvas must not navigate or submit. */
-function InertSite({ theme, children }: { theme: Theme; children: ReactNode }) {
-  return (
-    <div
-      onClickCapture={(e) => {
-        if ((e.target as Element).closest("a, button[type=submit]")) e.preventDefault();
-      }}
-      onSubmitCapture={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <SiteRoot theme={theme}>{children}</SiteRoot>
-    </div>
-  );
-}
 
 export function DesignerCanvas({
   sectionTypeId,

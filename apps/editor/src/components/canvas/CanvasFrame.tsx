@@ -1,4 +1,4 @@
-import { type ReactNode, type SyntheticEvent, useEffect, useState } from "react";
+import { type ReactNode, type SyntheticEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { canvasCss } from "./canvasCss";
 
@@ -17,6 +17,8 @@ export function CanvasFrame({
   children,
   onDocument,
   editing = false,
+  passThrough = false,
+  testId = "canvas-frame",
 }: {
   width: number;
   title: string;
@@ -25,6 +27,12 @@ export function CanvasFrame({
   onDocument?: (doc: Document | null) => void;
   /** Shows editor hints (empty-container outlines); off for plain previews. */
   editing?: boolean;
+  /**
+   * Lets pointer events fall through to the editor document (during drags): events over an
+   * iframe otherwise go to the iframe's document, where dnd-kit is not listening.
+   */
+  passThrough?: boolean;
+  testId?: string;
 }) {
   const [frame, setFrame] = useState<HTMLIFrameElement | null>(null);
   const [mount, setMount] = useState<HTMLElement | null>(null);
@@ -58,7 +66,12 @@ export function CanvasFrame({
     };
   }, [frame, mount]);
 
-  useEffect(() => () => onDocument?.(null), [onDocument]);
+  // Report the document going away only on unmount; callers may pass a new callback every render.
+  const onDocumentRef = useRef(onDocument);
+  useLayoutEffect(() => {
+    onDocumentRef.current = onDocument;
+  });
+  useEffect(() => () => onDocumentRef.current?.(null), []);
 
   return (
     <>
@@ -68,8 +81,8 @@ export function CanvasFrame({
         srcDoc={frameDocument}
         onLoad={handleLoad}
         className="block border-0 bg-white"
-        style={{ width, height }}
-        data-testid="canvas-frame"
+        style={{ width, height, pointerEvents: passThrough ? "none" : undefined }}
+        data-testid={testId}
       />
       {mount ? createPortal(children, mount) : null}
     </>
@@ -105,9 +118,11 @@ export function ScaledFrame({
 
   return (
     <figure className="m-0 flex flex-col gap-2">
-      <figcaption className="text-xs font-medium text-slate-600">
-        {label} · {width}px
-      </figcaption>
+      {label ? (
+        <figcaption className="text-xs font-medium text-slate-600">
+          {label} · {width}px
+        </figcaption>
+      ) : null}
       <div
         className="overflow-hidden rounded-lg border border-slate-200 shadow-sm"
         style={{ width: width * scale, height: height * scale }}

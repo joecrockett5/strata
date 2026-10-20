@@ -9,6 +9,7 @@ import { ScaledFrame, CanvasFrame } from "@/components/canvas/CanvasFrame";
 import { type Device, deviceWidths } from "@/components/canvas/devices";
 import { DeviceToggle } from "@/components/canvas/DeviceToggle";
 import { ConflictDialog, SaveIndicator } from "@/components/editor/SaveIndicator";
+import { StatusBadges } from "@/components/editor/StatusBadges";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { IconButton } from "@/components/ui/icon-button";
@@ -25,8 +26,8 @@ import {
   sectionTypeKeys,
   useSectionType,
 } from "../api";
-import { StatusBadges } from "../library/SectionLibraryPage";
-import { DesignerCanvas, SectionPreview } from "./DesignerCanvas";
+import { SectionPreview } from "@/components/canvas/SectionPreview";
+import { DesignerCanvas } from "./DesignerCanvas";
 import { PropertiesPanel } from "./PropertiesPanel";
 import { createCommands, DesignerContext, type DesignerDocument, type Selection } from "./state";
 import { StructurePanel } from "./StructurePanel";
@@ -272,7 +273,7 @@ function Designer({ detail }: { detail: SectionTypeDetail }) {
                 maxWidth={name === "desktop" ? 760 : name === "tablet" ? 420 : 300}
                 label={deviceLabels[name]}
               >
-                <CanvasFrame width={width} title={`Preview at ${String(width)}px`}>
+                <CanvasFrame width={width} title={`Preview at ${String(width)}px`} testId="preview-frame">
                   <SectionPreview definition={doc.definition} theme={theme} sectionTypeId={detail.id} />
                 </CanvasFrame>
               </ScaledFrame>

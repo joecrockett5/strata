@@ -12,17 +12,13 @@ import {
   useUploadMedia,
 } from "@/lib/media";
 
-/** Pick an uploaded image or upload a new one (JPEG/PNG/WebP up to 5 MB; SVG is rejected). */
-export function MediaLibraryDialog({
-  open,
-  onOpenChange,
-  onSelect,
+/** Upload button plus a grid of uploaded images (JPEG/PNG/WebP up to 5 MB; SVG is rejected). */
+export function MediaLibrary({
   selectedId,
+  onSelect,
 }: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  selectedId?: string | null | undefined;
   onSelect: (asset: MediaAsset) => void;
-  selectedId?: string | null;
 }) {
   const library = useMediaLibrary();
   const upload = useUploadMedia();
@@ -40,7 +36,6 @@ export function MediaLibraryDialog({
     setError(undefined);
     try {
       onSelect(await upload.mutateAsync(file));
-      onOpenChange(false);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed");
     } finally {
@@ -49,28 +44,23 @@ export function MediaLibraryDialog({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Media library"
-      description="JPEG, PNG or WebP, up to 5 MB."
-      className="w-[min(48rem,calc(100vw-2rem))]"
-    >
-      <div className="mb-4 flex items-center gap-3">
+    <div>
+      <div className="mb-4 flex flex-wrap items-center gap-3">
         <input
           ref={input}
           type="file"
           accept={ACCEPTED_TYPES.join(",")}
           className="sr-only"
-          id="media-upload"
+          aria-label="Upload image file"
           data-testid="media-upload-input"
           onChange={(e) => void onFiles(e.target.files)}
         />
         <Button variant="secondary" onClick={() => input.current?.click()} disabled={upload.isPending}>
           <ImageUp className="size-4" aria-hidden /> {upload.isPending ? "Uploading…" : "Upload image"}
         </Button>
+        <span className="text-xs text-slate-500">JPEG, PNG or WebP, up to 5 MB.</span>
         {error ? (
-          <p role="alert" className="text-sm text-red-700">
+          <p role="alert" className="w-full text-sm text-red-700">
             {error}
           </p>
         ) : null}
@@ -78,14 +68,17 @@ export function MediaLibraryDialog({
       {library.data?.length === 0 ? (
         <p className="text-sm text-slate-500">No images yet. Upload one to get started.</p>
       ) : null}
-      <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4" aria-label="Uploaded images">
+      <ul
+        className="grid max-h-80 grid-cols-3 gap-3 overflow-y-auto sm:grid-cols-4"
+        aria-label="Uploaded images"
+      >
         {library.data?.map((asset) => (
           <li key={asset.id}>
             <button
               type="button"
+              aria-pressed={asset.id === selectedId}
               onClick={() => {
                 onSelect(asset);
-                onOpenChange(false);
               }}
               className={cn(
                 "group block w-full overflow-hidden rounded-md border-2 text-left",
@@ -102,6 +95,36 @@ export function MediaLibraryDialog({
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/** Pick an uploaded image or upload a new one; closes on selection. */
+export function MediaLibraryDialog({
+  open,
+  onOpenChange,
+  onSelect,
+  selectedId,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSelect: (asset: MediaAsset) => void;
+  selectedId?: string | null;
+}) {
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Media library"
+      className="w-[min(48rem,calc(100vw-2rem))]"
+    >
+      <MediaLibrary
+        selectedId={selectedId}
+        onSelect={(asset) => {
+          onSelect(asset);
+          onOpenChange(false);
+        }}
+      />
     </Dialog>
   );
 }

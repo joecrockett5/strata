@@ -1,20 +1,14 @@
 import { Archive, ArchiveRestore, Copy, Plus } from "lucide-react";
 import { type SyntheticEvent, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Badge } from "@/components/ui/badge";
+import { StatusBadges } from "@/components/editor/StatusBadges";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
 import { IconButton } from "@/components/ui/icon-button";
 import { Input } from "@/components/ui/input";
-import {
-  type SectionTypeSummary,
-  useCreateSectionType,
-  useDuplicateSectionType,
-  useSectionTypes,
-  useSetArchived,
-} from "../api";
+import { useCreateSectionType, useDuplicateSectionType, useSectionTypes, useSetArchived } from "../api";
 
 export function SectionLibraryPage() {
   const [showArchived, setShowArchived] = useState(false);
@@ -112,22 +106,6 @@ export function SectionLibraryPage() {
         categories={[...new Set(types.data?.map((t) => t.category))]}
       />
     </main>
-  );
-}
-
-export function StatusBadges({
-  type,
-}: {
-  type: Pick<SectionTypeSummary, "archived" | "latestVersion" | "hasUnpublishedChanges">;
-}) {
-  return (
-    <span className="inline-flex flex-wrap gap-1">
-      {type.archived ? <Badge>Archived</Badge> : null}
-      {type.latestVersion > 0 ? <Badge tone="green">Published</Badge> : <Badge tone="amber">Draft</Badge>}
-      {type.latestVersion > 0 && type.hasUnpublishedChanges ? (
-        <Badge tone="blue">Unpublished changes</Badge>
-      ) : null}
-    </span>
   );
 }
 
