@@ -143,3 +143,71 @@ the relevant tests fail as expected.
 ### Deviations / notes
 - React 19 SSR hoists image preload hints; the parity harness strips them (not component markup).
 - Mobile nav links stay visible without JavaScript (progressive enhancement); `site.js` collapses them.
+
+---
+
+## M3 — Section designer ✅
+
+### Built
+- **Section library** (`/designer/sections`): table with category, latest version and status
+  badges (Draft / Published / Unpublished changes / Archived); create (name + category with
+  suggestions), duplicate, archive/restore, show-archived toggle.
+- **Section designer** (`/designer/sections/:id`):
+  - *Palette + outline* in one dnd-kit context (both in the editor document, so drags never
+    cross into the canvas iframe). Drops resolve through pure functions (`outlineModel.ts`:
+    rows, drop zones before/inside/after, zone → tree location) and the same `canPlace` rules as
+    clicks, so a drop the server would reject is shown in red and ignored. Palette items are
+    disabled where they cannot go (e.g. Nav inside a repeater).
+  - *Outline* is an ARIA `tree`: ↑/↓ select, Alt+↑/↓ move, Alt+→/← nest/un-nest, Del delete,
+    Ctrl+D duplicate, plus toolbar buttons (enabled only when the move would change something).
+  - *Canvas*: the real React renderer in the same-origin iframe; an editing adapter adds
+    selection/hover outlines (display-contents wrappers) and placeholders for images without media.
+    Links and forms in the canvas are inert.
+  - *Properties panel*: token/preset styles per primitive (columns count/ratio/gap/valign/stack
+    breakpoint, repeater key/label/min/max/default/layout, …); slot editor for key (pattern +
+    uniqueness checked before it reaches the document), label, editable/locked, required,
+    maxLength and default content (text, TipTap rich text, media library + alt text, URL link).
+  - *Preview*: device toggle (375/768/1280) on the canvas, a dialog with all three widths side
+    by side, and a theme-preset picker.
+  - *Versioning*: debounced autosave of name, category and definition (`If-Match`, conflict
+    dialog on 409, violations shown on 422); undo/redo (buttons, Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z,
+    also inside the iframe); "Publish version" flushes the save, then publishes with `If-Match`.
+    Server publish checks (`publishIssues`, returned on every save) are listed above the canvas
+    and clicking one selects the node it points at.
+- Editor foundations reused by M4: `lib/documentStore.ts` (Immer patches, coalesced keystrokes),
+  `lib/useAutosave.ts`, `lib/useUndoShortcuts.ts`, `components/canvas`, `components/richtext`,
+  `components/media`, `components/editor/SaveIndicator.tsx`, `lib/themes.ts`.
+- Seeded theme presets (Strata default, Coastal, Ink).
+- API JSON uses strict number handling, so the generated client types numbers as `number`.
+
+### Verification
+| Criterion | How |
+|---|---|
+| Designer builds Columns → Repeater → (Image + Heading + RichText) | `e2e/tests/m3-section-designer.spec.ts`: drags Columns from the palette onto the section and a Repeater into Column 1 (real pointer events, `e2e/support/dnd.ts`), clicks Image/Heading/Rich text into the repeater, asserts outline depth and the rendered `.st-columns .st-repeater .st-repeater__item` ×3 in the canvas iframe |
+| Locks one slot | Sets the heading's default and switches it to Locked; the published v1 definition fetched from `/api/library` contains `"mode":"locked"` |
+| Previews at 375 px | Device toggle → canvas iframe is 375 px wide and the repeater items share one column; preview dialog renders all three widths with the "Coastal" preset; screenshots captured and inspected |
+| Publishes version 1 | "Publish version" → "Published version 1", header shows v1, button disabled with nothing new to publish; library row shows v1 + Published |
+| Validation before publishing | Same test: an impossible repeater default (min 4 > default 3) lists a publish issue and disables publishing; fixing it clears it. Server rules unchanged from M1 (`SectionDefinitionRules`, Domain tests) |
+| Keyboard/outline fallback + undo | Same test: Alt+↑ reorders in the outline, the Undo button restores the order |
+| Unit level | Vitest: tree operations, primitive factories, outline rows/drop zones/drop locations, document store history and coalescing |
+| Seeded presets | `Seeded_theme_presets_are_listed_for_designers_and_owners` |
+
+Totals: 160 .NET tests, 66 frontend unit tests, 4 e2e tests — all green.
+
+### Deviations / decisions
+- Drag and drop in the designer targets the outline (the tree) rather than the canvas; the
+  canvas is for selection and preview. This matches "drag primitives from a palette into the
+  tree" and keeps all dnd-kit drags inside one document.
+- Link slot defaults can only be external URLs: a section definition has no pages to point at.
+- The API allows publishing an unchanged draft as a new version (existing behaviour); the UI
+  disables the button when there is nothing new.
+- At 1280 px the canvas is wider than the space between the side panels and scrolls
+  horizontally rather than being scaled (scaling would distort hit-testing for selection).
+- Theme presets are seeded with the development accounts (`Seed:Enabled`), not in production.
+
+### Known issues
+- dnd-kit reports `over` for a pointer position only after `onDragMove` for that position;
+  drops are therefore resolved in `onDragOver` and again from the final `onDragEnd` event
+  (commented in `StructurePanel.tsx`).
+- Drag and drop has no keyboard sensor; keyboard users use the outline shortcuts/buttons
+  (the brief's accessible fallback).

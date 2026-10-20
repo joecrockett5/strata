@@ -302,13 +302,16 @@ hidden (hiding is removal from the public site). Pages containing them cannot be
   `/designer/templates`, `/designer/templates/:id`, `/sites`, `/sites/new`, `/sites/:id`.
 * **Server state**: TanStack Query over the generated `openapi-fetch` client (antiforgery
   header and ProblemDetails handling in one middleware).
-* **Document state**: Zustand + Immer stores (`sectionDesignerStore`, `siteEditorStore`).
+* **Document state**: one generic Zustand + Immer store (`createDocumentStore<T>`), used for
+  section definitions (M3) and site/template documents (M4). UI state such as selection stays out
+  of it, so undo never changes what is selected.
   Undo/redo via Immer patches (`produceWithPatches`); consecutive keystrokes in one slot are
   coalesced into a single history entry.
 * **Autosave**: debounced (800 ms) `PUT` with `If-Match`; status indicator (saved / saving /
   error); 409 → blocking "changed elsewhere — reload" dialog; 422 → issues surfaced.
 * **DnD**: dnd-kit (`@dnd-kit/core`, `@dnd-kit/sortable`). Outline/layers panel offers the
-  same moves via buttons and keyboard (accessible fallback).
+  same moves via buttons and keyboard (accessible fallback). Every input method calls the same
+  commands, which apply the same placement rules (`tree.ts` `canPlace`).
 * **Rich text**: TipTap with StarterKit features disabled except bold, italic, lists, plus Link.
 * **UI chrome**: Tailwind CSS + a small set of shadcn/ui-style components (Radix primitives).
 
@@ -348,7 +351,7 @@ hidden (hiding is removal from the public site). Pages containing them cannot be
 
 | Risk | Mitigation |
 |---|---|
-| dnd-kit across an iframe boundary | Overlay-in-parent design (§6): no drag events cross documents. Spike early in M4. |
+| dnd-kit across an iframe boundary | Overlay-in-parent design (§6): no drag events cross documents. The section designer (M3) avoids it entirely by dragging into the outline; the site editor's overlay is the M4 spike. |
 | React/Razor markup drift | Parity fixtures for every primitive; tiny shared vocabulary of class names; renderer components written side by side. |
 | C# model drifting from JSON Schema | Schema validation on every write + discriminator-set and round-trip tests. |
 | Nested DnD in the designer tree is fiddly | Outline panel with buttons/keyboard is first-class, DnD is an enhancement. |

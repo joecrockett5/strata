@@ -46,9 +46,17 @@ starting work. Keep all three current.
   (served by the API at `/site-assets/`).
 - `src/Strata.Rendering` — Razor components (`Components/`, `Nodes/`) + `StrataRenderer`.
 - `apps/editor/src` — `app/` (router, shell), `features/<area>/`, `components/ui/`, `lib/`.
+  Shared editor plumbing: `lib/documentStore.ts` (Zustand + Immer patches, undo/redo),
+  `lib/useAutosave.ts` (debounced `If-Match` saves), `lib/useUndoShortcuts.ts`,
+  `components/canvas/` (iframe + portal, `canvasCss.ts` for `stx-` editor-only styles),
+  `components/richtext/`, `components/media/`, `components/editor/SaveIndicator.tsx`.
+- `apps/editor/src/features/section-designer` — `tree.ts` (pure tree ops + placement rules),
+  `outlineModel.ts` (outline rows, drop zones), `primitives.ts` (palette + factories),
+  `designer/` (page, state/commands, panels, canvas), `library/`.
 - `packages/api-client` — generated `openapi/strata-api.json` and `src/generated.ts` (both
   committed; CI fails if stale) plus the fetch client.
-- `e2e/` — Playwright; `support/` has login helpers and seeded accounts.
+- `e2e/` — Playwright; `support/` has login helpers, seeded accounts and `dnd.ts` (dnd-kit needs
+  stepped pointer moves; Playwright's `dragTo` does not activate it).
 
 ## Rendering parity workflow
 
@@ -70,4 +78,6 @@ starting work. Keep all three current.
 - Site CSS (`packages/site-styles`): class names prefixed `st-`, tokens as `--st-*` custom
   properties, mobile-first, **no `vh` units** (the editor canvas iframe is auto-height).
 - The React renderer must not import editor-only libraries.
+- Format with Prettier (`pnpm format`); committed files are expected to pass `pnpm format:check`.
+- Editor-only markup inside the canvas uses `stx-`/`data-stx-*`; it must never reach published HTML.
 - Never weaken a test or validation to make a check pass; record problems in PROGRESS.md.
