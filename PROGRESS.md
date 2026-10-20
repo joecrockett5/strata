@@ -345,3 +345,50 @@ Totals: 190 .NET tests, 90 frontend unit tests, 7 e2e tests — all green.
 
 ### Known issues
 - The rate limiter is in-memory per API instance (fine for a single instance).
+
+---
+
+## M6 — Seed content ✅
+
+### Built
+- `Strata.Infrastructure/Seeding/Demo/HarborPine.cs` (pure): ten section types built from
+  primitives in the content model — Site header (Nav + "Book a call"), Hero with image
+  (heading, subtext, CTA, background image), Services grid (repeater of cards), About and
+  philosophy, Team bios (repeater: photo, name, title, bio), Our process (repeater of numbered
+  steps), FAQ (repeater), Call to action band, Contact (contact form + office details), Site
+  footer (with a **locked** regulatory disclosure). Original copy for the fictional
+  "Harbor & Pine Wealth Partners".
+- Starter template "Harbor & Pine Advisor": Home, About, Services, Contact; footer
+  **locked**, header and contact **required**, `primary`/`secondary` **locked**; published v1
+  with a thumbnail.
+- Demo site `harbor-pine`: an independent copy of template v1, owned by the seeded site
+  owner, published v1 → `/s/harbor-pine/` and `http://harbor-pine.localhost:5080/`.
+- `PlaceholderImages.cs`: harbour, hills, three abstract portraits and a logo mark drawn with
+  the existing PNG encoder at seed time and stored through `IFileStorage` as designer media.
+- `DemoContentSeeder`: idempotent (skips when the template exists), runs from
+  `DatabaseInitializer` when `Seed:Enabled` and `Seed:DemoContent` (default true) are set;
+  refuses to write content that fails `HarborPine.Verify` (definition rules, document
+  validator, publish-check errors).
+
+### Verification
+| Criterion | How |
+|---|---|
+| Fresh start shows the demo site live | `e2e/tests/m6-seed-content.spec.ts`: the e2e database is created fresh and the API seeds it on startup (same path as `make dev`); `/s/harbor-pine/` has the SEO title, hero, logo, locked disclosure; nav reaches About (team portraits), Services (FAQ), Contact (form); host routing serves `/about`; screenshots at 1280 and 375 px inspected |
+| Template usable end to end | Same spec: the owner sees the published demo site, creates "Cedar Cove Advisors" from the template, edits the headline and firm name, sees the footer locked, publish checks pass with no issues, publishes and the public page shows the edit |
+| Content validity | `HarborPineContentTests`: covers the ten section types, `Verify` is empty, every definition and the template match the JSON Schema, template locks match the brief |
+| Seeder | `DemoContentTests`: seeds twice (idempotent), all four public pages 200, generated PNGs served, template offered with 4 pages, a site created from it has zero publish errors **and warnings** |
+
+Totals: 195 .NET tests, 90 frontend unit tests, 9 e2e tests — all green.
+
+### Bugs found and fixed
+- Site CSS: `.st-site a { color: inherit }` out-ranked `.st-button--primary`, so primary link
+  buttons on light backgrounds had dark text on navy. Now `:where(.st-site) a`.
+- Published pages kept the browser's 8px body margin (the editor iframe reset it, hiding the
+  bug). `site.css` resets `body`.
+- e2e drag helper did not scroll the source into view (exposed by the longer library).
+
+### Notes
+- API integration tests disable demo content (`Seed:DemoContent=false`) except
+  `DemoContentTests`, which runs the seeder explicitly.
+- Existing development databases get the demo content on the next start (the seeder only
+  checks for the template).
