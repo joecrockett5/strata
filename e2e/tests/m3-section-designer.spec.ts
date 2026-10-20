@@ -6,7 +6,9 @@ import { dragTo } from "../support/dnd";
 const row = (page: Page, key: string) => page.getByTestId(`outline-row-${key}`);
 const canvas = (page: Page) => page.frameLocator('[data-testid="canvas-frame"]');
 
-test("designer builds Columns → Repeater → (Image + Heading + RichText), locks a slot, previews at 375px and publishes v1", async ({ page }, testInfo) => {
+test("designer builds Columns → Repeater → (Image + Heading + RichText), locks a slot, previews at 375px and publishes v1", async ({
+  page,
+}, testInfo) => {
   const name = `Team grid ${String(Date.now())}`;
   await login(page, accounts.designer);
 
@@ -40,9 +42,15 @@ test("designer builds Columns → Repeater → (Image + Heading + RichText), loc
   // Keyboard fallback in the outline: Alt+↑ moves the heading above the image; Ctrl+Z undoes it.
   await row(page, "heading-1").click();
   await page.keyboard.press("Alt+ArrowUp");
-  await expect(page.getByTestId("outline").getByRole("treeitem").nth(4)).toHaveAttribute("data-row-key", "heading-1");
+  await expect(page.getByTestId("outline").getByRole("treeitem").nth(4)).toHaveAttribute(
+    "data-row-key",
+    "heading-1",
+  );
   await page.getByRole("button", { name: "Undo (Ctrl+Z)" }).click();
-  await expect(page.getByTestId("outline").getByRole("treeitem").nth(4)).toHaveAttribute("data-row-key", "image-1");
+  await expect(page.getByTestId("outline").getByRole("treeitem").nth(4)).toHaveAttribute(
+    "data-row-key",
+    "image-1",
+  );
 
   // The canvas renders the tree with the real renderer: default repeater items show sample content.
   await expect(canvas(page).locator(".st-columns .st-repeater .st-repeater__item")).toHaveCount(3);
@@ -70,7 +78,9 @@ test("designer builds Columns → Repeater → (Image + Heading + RichText), loc
   const frame = page.getByTestId("canvas-frame");
   await expect.poll(async () => (await frame.boundingBox())?.width).toBe(375);
   const items = canvas(page).locator(".st-repeater__item");
-  const lefts = await items.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().left)));
+  const lefts = await items.evaluateAll((els) =>
+    els.map((el) => Math.round(el.getBoundingClientRect().left)),
+  );
   expect(new Set(lefts).size).toBe(1);
   await page.screenshot({ path: testInfo.outputPath("designer-375.png"), fullPage: true });
 
@@ -79,7 +89,7 @@ test("designer builds Columns → Repeater → (Image + Heading + RichText), loc
   await page.getByRole("button", { name: "Preview" }).click();
   const previews = page.getByTestId("preview-all").locator("iframe");
   await expect(previews).toHaveCount(3);
-  await expect(page.getByTestId("preview-all").frameLocator("iframe").first().locator(".st-repeater__item")).toHaveCount(3);
+  await expect(previews.first().contentFrame().locator(".st-repeater__item")).toHaveCount(3);
   await page.screenshot({ path: testInfo.outputPath("designer-preview.png") });
   await page.keyboard.press("Escape");
 
@@ -91,7 +101,11 @@ test("designer builds Columns → Repeater → (Image + Heading + RichText), loc
   await page.screenshot({ path: testInfo.outputPath("designer-published.png"), fullPage: true });
 
   // It is now in the library owners pick from, with the heading slot locked in the frozen version.
-  const library = (await (await page.request.get("/api/library")).json()) as { name: string; version: number; definition: unknown }[];
+  const library = (await (await page.request.get("/api/library")).json()) as {
+    name: string;
+    version: number;
+    definition: unknown;
+  }[];
   const entry = library.find((s) => s.name === name);
   expect(entry?.version).toBe(1);
   expect(JSON.stringify(entry?.definition)).toContain('"mode":"locked"');
