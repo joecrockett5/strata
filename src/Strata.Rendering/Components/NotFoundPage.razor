@@ -1,0 +1,39 @@
+@* A styled 404, themed like the site when the site is known. *@
+@((MarkupString)"<!DOCTYPE html>")
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Page not found@(FirmName is null ? "" : $" · {FirmName}")</title>
+    <link rel="stylesheet" href="@(AssetBase)site.css" />
+</head>
+<body>
+    <SiteRoot Theme="Theme">
+        <main id="main" class="st-main">
+            <section class="st-section st-section--bg-surface st-section--pad-2xl st-section--width-narrow">
+                <div class="st-section__inner">
+                    <div class="st-stack st-stack--align-center st-gap-md">
+                        <p class="st-richtext st-align-center">Error 404</p>
+                        <h1 class="st-heading st-align-center">We couldn’t find that page</h1>
+                        <div class="st-richtext st-align-center"><p>The address may be mistyped, or the page has moved.</p></div>
+                        @if (HomeHref is not null)
+                        {
+                            <div class="st-button-row st-align-center">
+                                <a class="st-button st-button--primary" href="@HomeHref">Go to the home page</a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+        </main>
+    </SiteRoot>
+</body>
+</html>
+
+@code {
+    [Parameter, EditorRequired] public required Theme Theme { get; set; }
+    [Parameter] public string? FirmName { get; set; }
+    [Parameter] public string? HomeHref { get; set; }
+    [Parameter, EditorRequired] public required string AssetBase { get; set; }
+}

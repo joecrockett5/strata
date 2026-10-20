@@ -1,0 +1,39 @@
+@* A complete published HTML document: head metadata plus the page body. *@
+@((MarkupString)"<!DOCTYPE html>")
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@Head.Title</title>
+    @if (Head.Description.Length > 0)
+    {
+        <meta name="description" content="@Head.Description" />
+    }
+    <link rel="canonical" href="@Head.CanonicalUrl" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="@Head.SiteName" />
+    <meta property="og:title" content="@Head.Title" />
+    @if (Head.Description.Length > 0)
+    {
+        <meta property="og:description" content="@Head.Description" />
+    }
+    <meta property="og:url" content="@Head.CanonicalUrl" />
+    @if (Head.ImageUrl is not null)
+    {
+        <meta property="og:image" content="@Head.ImageUrl" />
+    }
+    <link rel="stylesheet" href="@(Head.AssetBase)site.css" />
+    <script src="@(Head.AssetBase)site.js" defer></script>
+</head>
+<body>
+    <PageView Document="Document" PageId="PageId" Definitions="Definitions" Context="Context" />
+</body>
+</html>
+
+@code {
+    [Parameter, EditorRequired] public required PageHead Head { get; set; }
+    [Parameter, EditorRequired] public required SiteDocument Document { get; set; }
+    [Parameter, EditorRequired] public required Guid PageId { get; set; }
+    [Parameter, EditorRequired] public required IReadOnlyDictionary<string, SectionDefinition> Definitions { get; set; }
+    [Parameter, EditorRequired] public required RenderContext Context { get; set; }
+}

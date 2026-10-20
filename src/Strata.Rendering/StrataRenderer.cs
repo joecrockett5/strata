@@ -48,6 +48,27 @@ public sealed class StrataRenderer(IServiceProvider services, ILoggerFactory log
             [nameof(PageView.Context)] = context,
         });
 
+    /// <summary>A complete published HTML document for one page.</summary>
+    public Task<string> RenderPublicPageAsync(PageHead head, SiteDocument document, Guid pageId, IReadOnlyDictionary<string, SectionDefinition> definitions, RenderContext context) =>
+        RenderAsync<PublicPage>(new Dictionary<string, object?>
+        {
+            [nameof(PublicPage.Head)] = head,
+            [nameof(PublicPage.Document)] = document,
+            [nameof(PublicPage.PageId)] = pageId,
+            [nameof(PublicPage.Definitions)] = definitions,
+            [nameof(PublicPage.Context)] = context,
+        });
+
+    /// <summary>A styled 404 document, themed like the site when there is one.</summary>
+    public Task<string> RenderNotFoundAsync(Theme theme, string? firmName, string? homeHref, string assetBase) =>
+        RenderAsync<NotFoundPage>(new Dictionary<string, object?>
+        {
+            [nameof(NotFoundPage.Theme)] = theme,
+            [nameof(NotFoundPage.FirmName)] = firmName,
+            [nameof(NotFoundPage.HomeHref)] = homeHref,
+            [nameof(NotFoundPage.AssetBase)] = assetBase,
+        });
+
     public async Task<string> RenderAsync<TComponent>(IDictionary<string, object?> parameters)
         where TComponent : IComponent
     {
