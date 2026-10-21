@@ -392,3 +392,37 @@ Totals: 195 .NET tests, 90 frontend unit tests, 9 e2e tests — all green.
   `DemoContentTests`, which runs the seeder explicitly.
 - Existing development databases get the demo content on the next start (the seeder only
   checks for the template).
+
+---
+
+## M7 — Polish and docs ✅
+
+### Built
+- `README.md`: what and why, highlights linking to the ADRs, Mermaid architecture diagram,
+  project layout, setup (dev loop and full Docker stack), seeded logins and content, a
+  two-minute reviewer demo script, Playwright screenshots, test suites, known limitations.
+- `docs/adr/0005-editor-canvas-iframe-with-overlay.md`: the canvas design (same-origin iframe
+  + portal, inline editors through the adapter, dnd-kit overlay in the editor document).
+  ADRs 0001–0004 cover the four the brief requires.
+- `e2e/tests/readme-screenshots.spec.ts` + `scripts/screenshots.sh` (`make screenshots`):
+  captures `docs/screenshots/*.png` from the seeded content. The spec is skipped unless
+  `STRATA_SCREENSHOTS=1`, so normal e2e runs never rewrite committed images.
+- `make gen` now regenerates schema types as well as the API client (it only ran `gen:api`).
+- `pnpm format:check` is now part of `scripts/test.sh` and CI. CLAUDE.md already required
+  committed files to pass it, but nothing enforced it, and `e2e/support/api.ts` had slipped
+  through unformatted (now fixed).
+
+### Verification
+| Criterion | How |
+|---|---|
+| README contents | Every item from the brief present; demo-script steps and UI labels checked against the code (credentials in `appsettings.Development.json`, Alt+arrow outline moves, CSP/304 on public pages, button and tab names) |
+| Screenshots captured by Playwright | `./scripts/screenshots.sh`; all seven images inspected (desktop shots use a 1680 px viewport so the 1280 px canvas is not clipped; lazy-loaded portraits are awaited) |
+| ADRs | 0001 dual renderers + parity, 0002 JSON content model/storage, 0003 lock enforcement, 0004 independent copies + pinned versions, 0005 editor canvas |
+| TODOs | `git grep` for TODO, FIXME, XXX and HACK finds nothing |
+
+Totals: 195 .NET tests, 90 frontend unit tests, 9 e2e tests (+3 opt-in screenshot specs) — all
+green; `./scripts/test.sh` (now including the format check) passes.
+
+### Known issues
+- Unchanged from earlier milestones; the user-facing list is in the README's "Known
+  limitations".
