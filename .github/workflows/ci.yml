@@ -37,6 +37,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Generated schema types and API client are current
         run: pnpm gen && git diff --exit-code -- packages/schema/src/generated.ts packages/api-client
+      - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

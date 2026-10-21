@@ -19,6 +19,9 @@ pnpm gen >/dev/null
 git diff --exit-code -- packages/schema/src/generated.ts packages/api-client \
   || { echo "error: generated files changed; run 'pnpm gen' (after 'dotnet build') and commit" >&2; exit 1; }
 
+step "format"
+pnpm format:check
+
 step "lint"
 pnpm lint
 
