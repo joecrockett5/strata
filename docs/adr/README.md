@@ -6,5 +6,6 @@
 | [0002](0002-json-content-model-and-storage.md) | One JSON Schema for the content model; content stored as `jsonb` | Accepted |
 | [0003](0003-server-authoritative-lock-enforcement.md) | Locking rules enforced on the server by diffing against the stored document | Accepted |
 | [0004](0004-independent-copies-and-pinned-versions.md) | Sites are independent copies of templates; section instances pin immutable versions | Accepted |
+| [0005](0005-editor-canvas-iframe-with-overlay.md) | Editor canvas: same-origin iframe, inline editors through the adapter, drag-and-drop overlay in the editor document | Accepted |
 
 Format: context → decision → consequences, kept short. Supersede rather than edit accepted ADRs.
