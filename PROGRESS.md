@@ -426,3 +426,12 @@ green; `./scripts/test.sh` (now including the format check) passes.
 ### Known issues
 - Unchanged from earlier milestones; the user-facing list is in the README's "Known
   limitations".
+
+### Post-M7 fix
+- `docker compose up` crashed the API (exit 139): the image runs as the non-root `app` user, but
+  `/data/media` did not exist in the image, so Docker created the `media-data` volume owned by
+  root. The demo seeder (M6) writes images at startup, which made it fail; owner uploads in
+  the Docker stack would also have failed since M5. The Dockerfile now creates `/data/media`
+  owned by `$APP_UID`. Verified: stack healthy, demo site, host routing and seeded media serve
+  200 through nginx. Gap: no automated test exercises the Docker image (CI e2e runs the API
+  directly).

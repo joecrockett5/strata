@@ -18,6 +18,8 @@ WORKDIR /app
 COPY --from=build /app ./
 COPY packages/site-styles/src ./site-assets
 ENV SiteAssets__Path=/app/site-assets
+# Create the media mount point owned by the app user; a new named volume inherits this ownership.
+RUN mkdir -p /data/media && chown $APP_UID:$APP_UID /data/media
 USER $APP_UID
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "Strata.Api.dll"]
