@@ -1,5 +1,5 @@
 # Thin wrapper: the real logic lives in scripts/*.sh so it also works without make.
-.PHONY: dev test e2e up down gen
+.PHONY: dev test e2e screenshots up down gen
 
 dev:   ## Postgres in Docker + dotnet watch + vite
 	./scripts/dev.sh
@@ -16,5 +16,8 @@ up:    ## Whole stack in Docker (http://localhost:8080)
 down:
 	docker compose down
 
-gen:   ## Regenerate the TypeScript API client
-	dotnet build src/Strata.Api && pnpm gen:api
+screenshots: ## Regenerate docs/screenshots from seeded content
+	./scripts/screenshots.sh
+
+gen:   ## Regenerate schema types and the TypeScript API client
+	dotnet build src/Strata.Api && pnpm gen
