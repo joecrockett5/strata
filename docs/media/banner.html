@@ -1,0 +1,169 @@
+<!doctype html>
+<!-- Source for docs/media/banner.png. Rendered by e2e/tests/readme-screenshots.spec.ts (./scripts/screenshots.sh). -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Strata banner</title>
+    <style>
+      :root {
+        --ink: #0c1626;
+        --navy: #12263c;
+        --teal: #2f7d7a;
+        --sand: #d8b46a;
+        --mist: #9fb3c8;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: 1280px;
+        height: 420px;
+        overflow: hidden;
+        background: var(--ink);
+        font-family: "Inter", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .banner {
+        position: relative;
+        width: 1280px;
+        height: 420px;
+        overflow: hidden;
+        background:
+          radial-gradient(900px 420px at 85% 0%, rgba(47, 125, 122, 0.35), transparent 60%),
+          radial-gradient(700px 360px at 0% 100%, rgba(216, 180, 106, 0.16), transparent 60%),
+          linear-gradient(135deg, var(--ink) 0%, var(--navy) 100%);
+      }
+      .layers {
+        position: absolute;
+        inset: auto 0 0 0;
+        height: 220px;
+        opacity: 0.55;
+      }
+      .copy {
+        position: absolute;
+        left: 72px;
+        top: 74px;
+        width: 560px;
+        color: #fff;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .brand h1 {
+        font-family: "Inter Display", "Inter", sans-serif;
+        font-size: 72px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1;
+      }
+      .tagline {
+        margin-top: 26px;
+        font-size: 26px;
+        line-height: 1.3;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        color: #e9eef5;
+      }
+      .tagline em {
+        font-style: normal;
+        color: var(--sand);
+      }
+      .sub {
+        margin-top: 14px;
+        font-size: 16px;
+        line-height: 1.55;
+        color: var(--mist);
+      }
+      .chips {
+        display: flex;
+        gap: 8px;
+        margin-top: 26px;
+      }
+      .chip {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.06);
+        color: #dbe4ee;
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .shot {
+        position: absolute;
+        left: 690px;
+        top: 58px;
+        width: 760px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow:
+          0 40px 80px rgba(0, 0, 0, 0.45),
+          0 0 0 1px rgba(255, 255, 255, 0.12);
+        transform: perspective(1600px) rotateY(-14deg) rotateX(4deg) rotateZ(1deg);
+        transform-origin: left center;
+      }
+      .shot .bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 26px;
+        padding: 0 12px;
+        background: #eef1f5;
+        border-bottom: 1px solid #dde3ea;
+      }
+      .shot .bar i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #c9d1db;
+      }
+      .shot img {
+        display: block;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="banner">
+      <svg class="layers" viewBox="0 0 1280 220" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 120 C 220 80, 420 150, 640 112 S 1060 70, 1280 110 V220 H0Z" fill="#163049" />
+        <path d="M0 150 C 260 118, 460 182, 700 146 S 1080 112, 1280 146 V220 H0Z" fill="#1b3a55" />
+        <path d="M0 182 C 240 160, 520 210, 760 178 S 1100 154, 1280 180 V220 H0Z" fill="#21455f" />
+      </svg>
+
+      <div class="copy">
+        <div class="brand">
+          <svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="4" y="8" width="44" height="12" rx="6" fill="#d8b46a" />
+            <rect x="12" y="26" width="44" height="12" rx="6" fill="#4fa6a2" />
+            <rect x="8" y="44" width="52" height="12" rx="6" fill="#9fb3c8" />
+          </svg>
+          <h1>Strata</h1>
+        </div>
+        <p class="tagline">
+          Design sections. <em>Lock what matters.</em><br />Publish fast, accessible sites.
+        </p>
+        <p class="sub">
+          A section-based website builder for regulated industries: a visual section designer, a drag-and-drop
+          site editor and server-rendered publishing.
+        </p>
+        <div class="chips">
+          <span class="chip">.NET 10</span>
+          <span class="chip">React 19</span>
+          <span class="chip">TypeScript</span>
+          <span class="chip">PostgreSQL</span>
+          <span class="chip">Docker</span>
+        </div>
+      </div>
+
+      <div class="shot">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <img src="../screenshots/site-editor.png" alt="" />
+      </div>
+    </div>
+  </body>
+</html>

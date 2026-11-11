@@ -61,4 +61,23 @@ test("section designer", async ({ page }) => {
 
   await page.getByRole("link", { name: "Sections" }).click();
   await page.screenshot({ path: out("section-library") });
+
+  await page.getByRole("link", { name: "Templates" }).click();
+  await page.getByRole("link", { name: "Harbor & Pine Advisor" }).click();
+  const canvas = page.frameLocator('[data-testid="canvas-frame"]');
+  await canvas.getByRole("textbox", { name: "Headline" }).click();
+  await page.getByRole("tab", { name: "Theme" }).click();
+  await settle(page);
+  await page.screenshot({ path: out("template-editor") });
+});
+
+// The README hero banner (docs/media/banner.html) embeds the site editor screenshot taken above.
+test.describe("banner", () => {
+  test.use({ viewport: { width: 1280, height: 420 }, deviceScaleFactor: 2 });
+
+  test("banner", async ({ page }) => {
+    await page.goto(new URL("../../docs/media/banner.html", import.meta.url).href);
+    await page.locator(".shot img").evaluate((img: HTMLImageElement) => img.decode());
+    await page.screenshot({ path: fileURLToPath(new URL("../../docs/media/banner.png", import.meta.url)) });
+  });
 });
