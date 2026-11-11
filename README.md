@@ -281,7 +281,7 @@ flowchart LR
 | Editor | React 19, Vite 8, TypeScript 5.9 (strict), Tailwind CSS 4, TanStack Query, Zustand + Immer, dnd-kit, TipTap, React Router |
 | API client | `openapi-typescript` + `openapi-fetch`, generated from the API's OpenAPI document |
 | Testing | xUnit v3, Shouldly, Testcontainers (PostgreSQL), Vitest, Ajv, Playwright |
-| Infrastructure | PostgreSQL 17, Docker Compose, nginx, GitHub Actions, CodeQL, Dependabot |
+| Infrastructure | PostgreSQL 17, Docker Compose, nginx, GitHub Actions, CodeQL |
 
 ### Project layout
 

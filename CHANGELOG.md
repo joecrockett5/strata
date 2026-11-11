@@ -10,13 +10,18 @@ requirement was verified.
 ### Added
 
 - MIT licence, contributing guide, code of conduct, security policy and this changelog.
-- Issue forms, a pull request template, CODEOWNERS, Dependabot and CodeQL scanning.
+- Issue forms, a pull request template, CODEOWNERS and CodeQL scanning.
 - README hero banner, badges, a recorded demo GIF and a screenshot gallery.
 - `scripts/demo-gif.sh` records the README demo with Playwright (crisp DevTools screencast plus
   a visible cursor) and encodes it with ffmpeg. `scripts/screenshots.sh` now also captures the
   template editor and renders the banner.
 - `.gitattributes`: LF line endings, and generated code marked so GitHub collapses it in diffs
   and leaves it out of the language stats.
+
+### Changed
+
+- Dependency updates: TypeScript 6, jsdom 31, HtmlSanitizer 11, the .NET and frontend
+  minor/patch groups, nginx 1.31 and the latest major versions of the GitHub Actions used in CI.
 
 ## M7 — Polish and docs
 
