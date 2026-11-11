@@ -11,7 +11,7 @@
     <PackageVersion Include="EFCore.NamingConventions" Version="10.0.1" />
     <!-- Content -->
     <PackageVersion Include="JsonSchema.Net" Version="9.6.0" />
-    <PackageVersion Include="HtmlSanitizer" Version="9.2.1039" />
+    <PackageVersion Include="HtmlSanitizer" Version="11.0.26" />
     <PackageVersion Include="AngleSharp" Version="1.10.1" />
     <!-- Tests -->
     <PackageVersion Include="xunit.v3" Version="4.0.3" />
