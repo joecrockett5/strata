@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS build
 WORKDIR /repo
 COPY global.json Directory.Build.props Directory.Packages.props Strata.slnx .editorconfig ./
 COPY src/Strata.Domain/Strata.Domain.csproj src/Strata.Domain/
