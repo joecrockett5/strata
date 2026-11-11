@@ -456,8 +456,13 @@ green; `./scripts/test.sh` (now including the format check) passes.
 - `LICENSE` (MIT), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1),
   `SECURITY.md` (GitHub private vulnerability reporting), `CHANGELOG.md` (by milestone).
 - `.github/`: issue forms (bug, feature; blank issues off, security contact link), pull request
-  template, CODEOWNERS, Dependabot (NuGet, npm, Actions, Docker; minor/patch grouped) and a
-  CodeQL workflow (C#, JS/TS, Actions; `build-mode: none`).
+  template, CODEOWNERS and a CodeQL workflow (C#, JS/TS, Actions; `build-mode: none`).
+- Dependabot version updates ran once (16 PRs; the ones CI verified were merged) and were then
+  turned off at the owner's request by removing `.github/dependabot.yml`. Not merged: the
+  .NET 11 / Node 26 major bumps (`Microsoft.Extensions.ApiDescription.Server` 11 fails the build;
+  `dotnet/sdk:11.0` conflicts with the `global.json` SDK 10 pin; `dotnet/aspnet:11.0` cannot run a
+  `net10.0` app; `node:26-alpine` no longer ships corepack, so the editor image fails at
+  `corepack enable`). Those belong to a deliberate .NET 11 / Node 26 upgrade.
 - `.gitattributes`: LF endings; generated code (schema types, API client, OpenAPI document,
   parity snapshots, migrations, lockfile) marked `linguist-generated`.
 
@@ -469,6 +474,5 @@ green; `./scripts/test.sh` (now including the format check) passes.
 | Code quality | `pnpm format:check`, `eslint e2e`, `pnpm --filter @strata/e2e typecheck` pass |
 
 ### Known issues
-- CodeQL and Dependabot have not run yet: they start once this reaches GitHub. Private
-  vulnerability reporting (linked from SECURITY.md and the code of conduct) has to be enabled
-  in the repository settings.
+- Private vulnerability reporting (linked from SECURITY.md and the code of conduct) has to be
+  enabled in the repository settings.
