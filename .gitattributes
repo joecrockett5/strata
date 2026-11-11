@@ -1,0 +1,16 @@
+# Normalise line endings; shell scripts must stay LF for Docker and CI.
+* text=auto eol=lf
+*.sh text eol=lf
+*.png binary
+*.gif binary
+
+# Generated code: collapsed in diffs and excluded from GitHub's language stats.
+packages/schema/src/generated.ts linguist-generated=true
+packages/api-client/src/generated.ts linguist-generated=true
+packages/api-client/openapi/** linguist-generated=true
+fixtures/parity/*.expected.html linguist-generated=true
+src/Strata.Infrastructure/Persistence/Migrations/** linguist-generated=true
+pnpm-lock.yaml linguist-generated=true
+
+# Docs and screenshots are not code.
+docs/** linguist-documentation=true
