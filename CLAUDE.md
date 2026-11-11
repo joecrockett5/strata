@@ -19,6 +19,8 @@ starting work. Keep all three current.
 | Dev loop (db + `dotnet watch` + vite) | `./scripts/dev.sh` (`make dev`) — editor http://localhost:5173, API http://localhost:5080 |
 | All checks except e2e | `./scripts/test.sh` (`make test`) |
 | E2E (Playwright) | `./scripts/e2e.sh [playwright args]` (`make e2e`) — ports 5081/5174, db `strata_e2e` (reset each run) |
+| README screenshots + banner | `./scripts/screenshots.sh` (`make screenshots`) |
+| README demo GIF (needs ffmpeg) | `./scripts/demo-gif.sh` (`make demo-gif`) → `docs/media/demo.gif` |
 | Full stack in Docker | `docker compose up --build -d --wait` → http://localhost:8080 |
 | .NET build / tests | `dotnet build`, `dotnet test` (Testcontainers starts its own Postgres) |
 | Single .NET test | `dotnet test --project tests/Strata.Api.Tests -- --filter-method "*Name*"` |
@@ -63,7 +65,9 @@ starting work. Keep all three current.
 - `packages/api-client` — generated `openapi/strata-api.json` and `src/generated.ts` (both
   committed; CI fails if stale) plus the fetch client.
 - `e2e/` — Playwright; `support/` has login helpers, seeded accounts and `dnd.ts` (dnd-kit needs
-  stepped pointer moves; Playwright's `dragTo` does not activate it).
+  stepped pointer moves; Playwright's `dragTo` does not activate it). `readme-*.spec.ts` are
+  opt-in recorders for the README images (`support/recorder.ts` draws the demo cursor).
+- `docs/media/` — README banner (`banner.html` source → `banner.png`), logo, demo GIF.
 
 ## Rendering parity workflow
 

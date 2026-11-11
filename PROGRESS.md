@@ -435,3 +435,40 @@ green; `./scripts/test.sh` (now including the format check) passes.
   owned by `$APP_UID`. Verified: stack healthy, demo site, host routing and seeded media serve
   200 through nginx. Gap: no automated test exercises the Docker image (CI e2e runs the API
   directly).
+
+---
+
+## Repository presentation ✅
+
+### Built
+- README overhaul: hero banner, CI/CodeQL/licence/stack badges, a recorded demo GIF, a
+  captioned screenshot gallery, feature grid, design-decision table (linking the ADRs), tech
+  stack, Docker-first quick start and a documentation index.
+- `docs/media/banner.html` → `banner.png` (rendered at 2× by `readme-screenshots.spec.ts`, which
+  embeds the freshly captured site-editor screenshot) and `docs/media/logo.svg`.
+- `e2e/tests/readme-demo.spec.ts` + `e2e/support/recorder.ts` + `scripts/demo-gif.sh`
+  (`make demo-gif`): records the owner flow (sign in, inline headline edit, drag a library
+  section into the page, locked theme tokens, publish, public site) as a DevTools screencast
+  with a drawn cursor, then ffmpeg encodes `docs/media/demo.gif` (two-pass palette, 12 fps,
+  1200 px). Skipped unless `STRATA_DEMO=1`. Playwright's own video recorder was not used: its
+  low-bitrate VP8 blurs UI text.
+- The screenshot spec also captures `template-editor.png` (designer view of the theme locks).
+- `LICENSE` (MIT), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1),
+  `SECURITY.md` (GitHub private vulnerability reporting), `CHANGELOG.md` (by milestone).
+- `.github/`: issue forms (bug, feature; blank issues off, security contact link), pull request
+  template, CODEOWNERS, Dependabot (NuGet, npm, Actions, Docker; minor/patch grouped) and a
+  CodeQL workflow (C#, JS/TS, Actions; `build-mode: none`).
+- `.gitattributes`: LF endings; generated code (schema types, API client, OpenAPI document,
+  parity snapshots, migrations, lockfile) marked `linguist-generated`.
+
+### Verification
+| Criterion | How |
+|---|---|
+| Demo GIF | `./scripts/demo-gif.sh` passes against a freshly seeded e2e database; frames inspected (cursor visible across the navigation to the public site, canvas not clipped at 1680 px) |
+| Screenshots and banner | `./scripts/screenshots.sh` — 4/4 tests pass; banner and template editor images inspected |
+| Code quality | `pnpm format:check`, `eslint e2e`, `pnpm --filter @strata/e2e typecheck` pass |
+
+### Known issues
+- CodeQL and Dependabot have not run yet: they start once this reaches GitHub. Private
+  vulnerability reporting (linked from SECURITY.md and the code of conduct) has to be enabled
+  in the repository settings.
